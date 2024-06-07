@@ -1,0 +1,16 @@
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/bin/Debug/net8.0/Roadmap.Infrastructure.deps.json
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/bin/Debug/net8.0/Roadmap.Infrastructure.dll
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/bin/Debug/net8.0/Roadmap.Infrastructure.pdb
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/bin/Debug/net8.0/Roadmap.Domain.dll
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/bin/Debug/net8.0/Roadmap.Domain.pdb
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/Roadmap.Infrastructure.csproj.AssemblyReference.cache
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/Roadmap.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/Roadmap.Infrastructure.AssemblyInfoInputs.cache
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/Roadmap.Infrastructure.AssemblyInfo.cs
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/Roadmap.Infrastructure.csproj.CoreCompileInputs.cache
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/Roadmap.Infrastructure.sourcelink.json
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/Roadmap..44FABBE1.Up2Date
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/Roadmap.Infrastructure.dll
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/refint/Roadmap.Infrastructure.dll
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/Roadmap.Infrastructure.pdb
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/Debug/net8.0/ref/Roadmap.Infrastructure.dll
