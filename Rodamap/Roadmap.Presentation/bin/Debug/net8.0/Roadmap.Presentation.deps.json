@@ -12,6 +12,8 @@
           "Microsoft.EntityFrameworkCore": "8.0.6",
           "Microsoft.EntityFrameworkCore.Design": "8.0.6",
           "Microsoft.EntityFrameworkCore.Tools": "8.0.6",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.4",
+          "Npgsql.EntityFrameworkCore.PostgreSQL.Design": "1.1.0",
           "Roadmap.Infrastructure": "1.0.0",
           "Roadmap.Persistence": "1.0.0",
           "Swashbuckle.AspNetCore": "6.6.2"
@@ -580,18 +582,17 @@
           }
         }
       },
-      "Npgsql.EntityFrameworkCore.PostgreSQL/1.1.0": {
+      "Npgsql.EntityFrameworkCore.PostgreSQL/8.0.4": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "8.0.6",
+          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.6",
           "Microsoft.EntityFrameworkCore.Relational": "8.0.6",
-          "Microsoft.Extensions.DependencyInjection": "8.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
           "Npgsql": "8.0.3"
         },
         "runtime": {
-          "lib/netstandard1.3/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
-            "assemblyVersion": "1.1.0.0",
-            "fileVersion": "1.1.0.0"
+          "lib/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll": {
+            "assemblyVersion": "8.0.4.0",
+            "fileVersion": "8.0.4.0"
           }
         }
       },
@@ -603,7 +604,7 @@
           "Microsoft.Extensions.DependencyInjection": "8.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
           "Npgsql": "8.0.3",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0"
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.4"
         },
         "runtime": {
           "lib/netstandard1.3/Npgsql.EntityFrameworkCore.PostgreSQL.Design.dll": {
@@ -1365,7 +1366,8 @@
       },
       "Common/1.0.0": {
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "8.0.6"
+          "Microsoft.EntityFrameworkCore": "8.0.6",
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.6.2"
         },
         "runtime": {
           "Common.dll": {}
@@ -1396,6 +1398,7 @@
           "Microsoft.EntityFrameworkCore": "8.0.6",
           "Microsoft.Extensions.Configuration": "8.0.0",
           "Npgsql": "8.0.3",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.4",
           "Npgsql.EntityFrameworkCore.PostgreSQL.Design": "1.1.0",
           "Roadmap.Domain": "1.0.0",
           "Swashbuckle.AspNetCore": "6.6.2"
@@ -1409,7 +1412,8 @@
           "Common": "1.0.0",
           "Microsoft.EntityFrameworkCore": "8.0.6",
           "Roadmap.Application": "1.0.0",
-          "Roadmap.Infrastructure": "1.0.0"
+          "Roadmap.Infrastructure": "1.0.0",
+          "Swashbuckle.AspNetCore": "6.6.2"
         },
         "runtime": {
           "Roadmap.Persistence.dll": {}
@@ -1724,12 +1728,12 @@
       "path": "npgsql/8.0.3",
       "hashPath": "npgsql.8.0.3.nupkg.sha512"
     },
-    "Npgsql.EntityFrameworkCore.PostgreSQL/1.1.0": {
+    "Npgsql.EntityFrameworkCore.PostgreSQL/8.0.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-7J4oVuALr8voMhbCkQUODu6VG9DR4u3Io4oIwZK1VocNlXN8RHPFhS1nOQOb/TAe+Eav/GqnmEiSZ0uhe2wphQ==",
-      "path": "npgsql.entityframeworkcore.postgresql/1.1.0",
-      "hashPath": "npgsql.entityframeworkcore.postgresql.1.1.0.nupkg.sha512"
+      "sha512": "sha512-/hHd9MqTRVDgIpsToCcxMDxZqla0HAQACiITkq1+L9J2hmHKV6lBAPlauF+dlNSfHpus7rrljWx4nAanKD6qAw==",
+      "path": "npgsql.entityframeworkcore.postgresql/8.0.4",
+      "hashPath": "npgsql.entityframeworkcore.postgresql.8.0.4.nupkg.sha512"
     },
     "Npgsql.EntityFrameworkCore.PostgreSQL.Design/1.1.0": {
       "type": "package",

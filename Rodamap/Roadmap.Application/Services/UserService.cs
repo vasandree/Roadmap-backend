@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
 using Common.Exceptions;
 using Microsoft.Extensions.Configuration;
@@ -12,22 +13,21 @@ namespace Roadmap.Application.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _repository;
-    private readonly IGenericRepository<RefreshToken> _refresh;
-    private readonly IGenericRepository<ExpiredToken> _expired;
+    private readonly IRefreshToken _refresh;
+    private readonly IExpiredToken _expired;
     private readonly IJwtService _jwt;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
 
 
-    public UserService(IUserRepository repository, IJwtService jwt, IConfiguration configuration,
-        IGenericRepository<RefreshToken> refresh, IMapper mapper, IGenericRepository<ExpiredToken> expired)
+    public UserService(IUserRepository repository, IRefreshToken refresh, IExpiredToken expired, IJwtService jwt, IConfiguration configuration, IMapper mapper)
     {
         _repository = repository;
+        _refresh = refresh;
+        _expired = expired;
         _jwt = jwt;
         _configuration = configuration;
-        _refresh = refresh;
         _mapper = mapper;
-        _expired = expired;
     }
 
     public async Task<TokensDto> RegisterUser(RegisterDto registerDto)
@@ -106,7 +106,9 @@ public class UserService : IUserService
 
         var user = await _repository.GetById(userId);
 
-        return _mapper.Map<UserDto>(user);
+        var userDto = _mapper.Map<UserDto>(user);
+
+        return userDto;
     }
 
     public async Task Logout(Guid userId, string refreshToken, string accessToken)
@@ -127,7 +129,8 @@ public class UserService : IUserService
         await _expired.CreateAsync(new ExpiredToken
         {
             Id = Guid.NewGuid(),
-            TokenString = accessToken
+            TokenString = accessToken,
+            ExpiryDate = new JwtSecurityTokenHandler().ReadJwtToken(accessToken).ValidTo
         });
     }
 

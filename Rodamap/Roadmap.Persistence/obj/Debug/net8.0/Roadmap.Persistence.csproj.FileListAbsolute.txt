@@ -20,3 +20,5 @@
 /Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Persistence/obj/Debug/net8.0/refint/Roadmap.Persistence.dll
 /Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Persistence/obj/Debug/net8.0/Roadmap.Persistence.pdb
 /Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Persistence/obj/Debug/net8.0/ref/Roadmap.Persistence.dll
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Persistence/bin/Debug/net8.0/Roadmap.Persistence.runtimeconfig.json
+/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Persistence/obj/Debug/net8.0/Roadmap.Persistence.genruntimeconfig.cache

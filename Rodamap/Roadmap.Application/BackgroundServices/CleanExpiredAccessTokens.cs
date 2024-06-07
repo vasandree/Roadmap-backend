@@ -32,6 +32,7 @@ public class CleanExpiredAccessTokens : BackgroundService
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
         var expiredTokens = await context.ExpiredTokens
+            .Where(token => token.ExpiryDate <= DateTime.UtcNow)
             .ToListAsync(cancellationToken: stoppingToken);
 
         foreach (var token in expiredTokens)

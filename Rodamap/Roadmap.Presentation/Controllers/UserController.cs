@@ -28,13 +28,13 @@ public class UserController : ControllerBase
         return Ok(await _userService.RegisterUser(registerDto));
     }
 
-    [HttpGet, Authorize]
+    [HttpGet, Authorize(Policy = "AuthorizationPolicy")]
     public async Task<IActionResult> GetUserProfile()
     {
         return Ok(await _userService.GetProfile(Guid.Parse(User.FindFirst("UserId")!.Value!)));
     }
 
-    [HttpPost, Authorize, Route("logout")]
+    [HttpPost, Authorize(Policy = "AuthorizationPolicy"), Route("logout")]
     public async Task<IActionResult> Logout(string refreshToken)
     {
         var accessToken = HttpContext.Request.Headers["Authorization"].First()?.Replace("Bearer ", "")!;
@@ -42,7 +42,7 @@ public class UserController : ControllerBase
         return Ok();
     }
 
-    [HttpPost, Authorize, Route("refresh")]
+    [HttpPost, Authorize(Policy = "AuthorizationPolicy"), Route("refresh")]
     public async Task<IActionResult> RefreshToken([FromBody]TokensDto tokensDto)
     {
         return Ok(await _userService.RefreshToken(tokensDto));

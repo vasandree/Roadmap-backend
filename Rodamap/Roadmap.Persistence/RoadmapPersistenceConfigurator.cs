@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Roadmap.Application.Interfaces.Repositories;
+using Roadmap.Domain.Entities;
 using Roadmap.Persistence.Repositories;
 
 namespace Roadmap.Persistence;
@@ -11,5 +12,7 @@ public static class RoadmapPersistenceConfigurator
     {
         builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         builder.Services.AddTransient<IUserRepository, UserRepository>();
+        builder.Services.AddTransient<IExpiredToken, ExpiredTokenRepository>();
+        builder.Services.AddTransient<IRefreshToken, RefreshTokenRepository>();
     }
 }

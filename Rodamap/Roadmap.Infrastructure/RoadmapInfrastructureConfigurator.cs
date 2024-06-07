@@ -9,7 +9,7 @@ public static class RoadmapInfrastructureConfigurator
 {
     public static void ConfigureRoadmapInfrastructure(this WebApplicationBuilder builder)
     {
-        var connection = builder.Configuration.GetConnectionString("PostgresUser");
+        var connection = builder.Configuration.GetConnectionString("PostgresRoadmap")!;
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connection));
     }
 

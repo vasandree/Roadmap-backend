@@ -17,5 +17,5 @@ public class User
     [Required]
     public string Password { get; set; }
 
-    public ICollection<RefreshToken?> RefreshTokens { get; set; }
+    public IEnumerable<RefreshToken>? RefreshTokens { get; set; }
 }

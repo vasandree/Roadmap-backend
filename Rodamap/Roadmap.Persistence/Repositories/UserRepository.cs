@@ -5,20 +5,22 @@ using Roadmap.Infrastructure;
 
 namespace Roadmap.Persistence.Repositories;
 
-public class UserRepository: GenericRepository<User>, IUserRepository
+public class UserRepository : GenericRepository<User>, IUserRepository
 {
     private readonly ApplicationDbContext _context;
-    
-    public UserRepository(DbContext context, ApplicationDbContext context1) : base(context)
+
+    public UserRepository(ApplicationDbContext context) : base(context)
     {
-        _context = context1;
+        _context = context;
     }
-    
+
     public async Task<User> GetById(Guid id)
     {
-        return (await _context.Users.FirstOrDefaultAsync(x => x.UserId == id)!);
+        return (await _context.Users
+            .Include(x=>x.RefreshTokens)
+            .FirstOrDefaultAsync(x => x.UserId == id)!);
     }
-    
+
 
     public async Task<User> GetByEmail(string email)
     {

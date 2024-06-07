@@ -10,4 +10,7 @@ public class ExpiredToken
     
     [Required]
     public string TokenString { get; set; }
+    
+    [Required]
+    public DateTime ExpiryDate { get; set; }
 }

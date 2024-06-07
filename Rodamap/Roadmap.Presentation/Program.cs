@@ -1,3 +1,4 @@
+using Common.Middleware;
 using Roadmap.Application.Configurators;
 using Roadmap.Infrastructure;
 using Roadmap.Persistence;
@@ -11,6 +12,8 @@ builder.ConfigureRoadmapPersistence();
 builder.ConfigureRoadmapApplication();
 
 builder.ConfigureAuth();
+
+builder.ConfigureSwagger();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -31,5 +34,9 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapControllers();
+
+app.UseMiddleware();
 
 app.Run();

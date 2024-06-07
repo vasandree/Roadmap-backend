@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kHaWW0zlMXbtf3Oo12EmSr7VbtqDqlL6BOEP8KPYDHHxsfqHGHJaGocUNbEWC+AzBBZxbRPaypCTJISpD/rS2g==",
+  "dgSpecHash": "l94cX5MiKaRehzEHJGdPXHuBs9DRce+yu6gK48f2mvCJXOuAUnV78WHFLn/47CVkEr9eyP8zBgJnLdibtoBGsg==",
   "success": true,
   "projectFilePath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Presentation/Roadmap.Presentation.csproj",
   "expectedPackageFiles": [
@@ -47,7 +47,7 @@
     "/Users/andreivasilev/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",
     "/Users/andreivasilev/.nuget/packages/netstandard.library/1.6.1/netstandard.library.1.6.1.nupkg.sha512",
     "/Users/andreivasilev/.nuget/packages/npgsql/8.0.3/npgsql.8.0.3.nupkg.sha512",
-    "/Users/andreivasilev/.nuget/packages/npgsql.entityframeworkcore.postgresql/1.1.0/npgsql.entityframeworkcore.postgresql.1.1.0.nupkg.sha512",
+    "/Users/andreivasilev/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.4/npgsql.entityframeworkcore.postgresql.8.0.4.nupkg.sha512",
     "/Users/andreivasilev/.nuget/packages/npgsql.entityframeworkcore.postgresql.design/1.1.0/npgsql.entityframeworkcore.postgresql.design.1.1.0.nupkg.sha512",
     "/Users/andreivasilev/.nuget/packages/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "/Users/andreivasilev/.nuget/packages/runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl/4.3.0/runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Roadmap.Application.Authorization;
 
 namespace Roadmap.Application.Configurators;
 
@@ -30,11 +31,13 @@ public static class JwtConfigurator
                 };
             });
 
-        builder.Services.AddAuthorization(options => options.DefaultPolicy =
-            new AuthorizationPolicyBuilder
-                    (JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .Build());
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy(
+                "AuthorizationPolicy",
+                policy => policy.Requirements.Add(new AuthorizationRequirements()));
+        });
+        builder.Services.AddSingleton<IAuthorizationHandler, AuthorizationHandler>();
     }
     
 }

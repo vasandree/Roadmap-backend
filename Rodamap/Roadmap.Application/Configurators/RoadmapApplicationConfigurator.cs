@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Roadmap.Application.Authorization;
 using Roadmap.Application.BackgroundServices;
 using Roadmap.Application.Interfaces.Services;
 using Roadmap.Application.Mapping;
@@ -15,9 +17,10 @@ public static class RoadmapApplicationConfigurator
 
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IJwtService, JwtService>();
-        
+
         builder.Services.AddHostedService<CleanExpiredRefreshTokens>();
         builder.Services.AddHostedService<CleanExpiredAccessTokens>();
-
+        
+        builder.Services.AddHttpContextAccessor();
     }
 }
