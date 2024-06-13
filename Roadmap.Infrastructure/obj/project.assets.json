@@ -5840,11 +5840,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj",
+      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj",
       "projectName": "Roadmap.Infrastructure",
-      "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj",
+      "projectPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj",
       "packagesPath": "/Users/andreivasilev/.nuget/packages/",
-      "outputPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/obj/",
+      "outputPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Infrastructure/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/andreivasilev/.nuget/NuGet/NuGet.Config"
@@ -5860,8 +5860,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/Roadmap.Domain.csproj": {
-              "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/Roadmap.Domain.csproj"
+            "/Users/andreivasilev/Desktop/backend/Roadmap.Domain/Roadmap.Domain.csproj": {
+              "projectPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Domain/Roadmap.Domain.csproj"
             }
           }
         }

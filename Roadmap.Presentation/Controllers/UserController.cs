@@ -4,7 +4,7 @@ using Roadmap.Application.Dtos.Requests;
 using Roadmap.Application.Dtos.Responses;
 using Roadmap.Application.Interfaces.Services;
 
-namespace Rodamap.Controllers;
+namespace Roadmap.Controllers;
 
 [ApiController, Route("api/user")]
 public class UserController : ControllerBase

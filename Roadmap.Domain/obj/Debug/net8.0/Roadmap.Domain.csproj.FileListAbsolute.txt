@@ -10,3 +10,15 @@
 /Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/obj/Debug/net8.0/refint/Roadmap.Domain.dll
 /Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/obj/Debug/net8.0/Roadmap.Domain.pdb
 /Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/obj/Debug/net8.0/ref/Roadmap.Domain.dll
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/bin/Debug/net8.0/Roadmap.Domain.deps.json
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/bin/Debug/net8.0/Roadmap.Domain.dll
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/bin/Debug/net8.0/Roadmap.Domain.pdb
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/Debug/net8.0/Roadmap.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/Debug/net8.0/Roadmap.Domain.AssemblyInfoInputs.cache
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/Debug/net8.0/Roadmap.Domain.AssemblyInfo.cs
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/Debug/net8.0/Roadmap.Domain.csproj.CoreCompileInputs.cache
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/Debug/net8.0/Roadmap.Domain.sourcelink.json
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/Debug/net8.0/Roadmap.Domain.dll
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/Debug/net8.0/refint/Roadmap.Domain.dll
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/Debug/net8.0/Roadmap.Domain.pdb
+/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/Debug/net8.0/ref/Roadmap.Domain.dll

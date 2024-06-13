@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "pDjBe3sRCadQAFV5FExpWPRUK1IW+ktjHEAZju4NZ/a6WkkqsxoJhbKIAgQF6jIV3zsHZ1hUBqJ/bjp97aje5w==",
+  "dgSpecHash": "97F0PVichttS6dCPo/o9y/ZjD431yvd93Z8kgGSSowR544EVbLkHe1Bx5uRpqk/czrNhW6lv6X6W42/VS2tOyg==",
   "success": true,
-  "projectFilePath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Application/Roadmap.Application.csproj",
+  "projectFilePath": "/Users/andreivasilev/Desktop/backend/Roadmap.Application/Roadmap.Application.csproj",
   "expectedPackageFiles": [
     "/Users/andreivasilev/.nuget/packages/automapper/13.0.1/automapper.13.0.1.nupkg.sha512",
     "/Users/andreivasilev/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",

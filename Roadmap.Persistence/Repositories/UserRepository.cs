@@ -46,4 +46,9 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     {
         return await _context.Users.AnyAsync(x => x.Username == username);
     }
+
+    public async Task<IQueryable<User>> GetAsQueryable()
+    {
+        return  _context.Users.AsQueryable();
+    }
 }

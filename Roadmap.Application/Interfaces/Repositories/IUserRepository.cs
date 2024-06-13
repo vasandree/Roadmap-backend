@@ -11,4 +11,6 @@ public interface IUserRepository : IGenericRepository<User>
     Task<bool> CheckIfIdExists(Guid id);
     Task<bool> CheckIfEmailExists(string email);
     Task<bool> CheckIfUsernameExists(string username);
+
+    Task<IQueryable<User>> GetAsQueryable();
 }

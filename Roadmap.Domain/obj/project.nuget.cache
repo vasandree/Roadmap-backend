@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZZIGVvPDsdmA16Xdy6t/2TZi3cX/pNOA+/ZI/QWxLBdJ1JAmWNBzQdls90HfJmutwIFA+IXqXA+TYyIrESpAlw==",
+  "dgSpecHash": "+KSJJyMkpEFCvmN6VjxJmlg5mT4IQQdyN5TUmDOKjXwSkP9GIm9NAdmp2JSI2RRfDkEGsphdQ5K2VowbVQxIBQ==",
   "success": true,
-  "projectFilePath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/Roadmap.Domain.csproj",
+  "projectFilePath": "/Users/andreivasilev/Desktop/backend/Roadmap.Domain/Roadmap.Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

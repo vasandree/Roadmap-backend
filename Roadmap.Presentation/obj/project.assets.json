@@ -7932,11 +7932,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Presentation/Roadmap.Presentation.csproj",
+      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Roadmap.Presentation/Roadmap.Presentation.csproj",
       "projectName": "Roadmap.Presentation",
-      "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Presentation/Roadmap.Presentation.csproj",
+      "projectPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Presentation/Roadmap.Presentation.csproj",
       "packagesPath": "/Users/andreivasilev/.nuget/packages/",
-      "outputPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Presentation/obj/",
+      "outputPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Presentation/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/andreivasilev/.nuget/NuGet/NuGet.Config"
@@ -7952,11 +7952,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj": {
-              "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj"
+            "/Users/andreivasilev/Desktop/backend/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj": {
+              "projectPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj"
             },
-            "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Persistence/Roadmap.Persistence.csproj": {
-              "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Persistence/Roadmap.Persistence.csproj"
+            "/Users/andreivasilev/Desktop/backend/Roadmap.Persistence/Roadmap.Persistence.csproj": {
+              "projectPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Persistence/Roadmap.Persistence.csproj"
             }
           }
         }

@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
 using Common.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Roadmap.Application.Dtos.Requests;
 using Roadmap.Application.Dtos.Responses;
@@ -170,5 +171,22 @@ public class UserService : IUserService
             AccessToken = _jwt.GenerateTokenString(user.UserId, user.Email, user.Username),
             RefreshToken = refreshToken.TokenString
         };
+    }
+
+    public async Task<IReadOnlyList<UserDto>> GetUsers(string username)
+    {
+        var users = await _repository.GetAsQueryable();
+
+        if (!string.IsNullOrEmpty(username))
+        {
+            users = GetUsersByUsername(users, username);
+        }
+
+        return await users.Take(10).Select(u => _mapper.Map<UserDto>(u)).ToListAsync();
+    }
+    
+    private IQueryable<User> GetUsersByUsername(IQueryable<User> users, string? username)
+    {
+        return !string.IsNullOrEmpty(username) ? users.Where(x=>x.Username.Contains(username)) : users;
     }
 }
