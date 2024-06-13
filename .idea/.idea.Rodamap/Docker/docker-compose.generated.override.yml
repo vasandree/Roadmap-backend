@@ -1,0 +1,21 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  roadmap.presentation:
+    build:
+      context: "/Users/andreivasilev/Desktop/backend/Rodamap"
+      dockerfile: "Roadmap.Presentation/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/Roadmap.Presentation.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "roadmap.presentation:dev"
+    ports: []
+    volumes:
+    - "/Users/andreivasilev/.nuget/packages:/home/app/.nuget/packages"
+    - "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Presentation:/app:rw"
+    - "/Users/andreivasilev/Desktop/backend/Rodamap:/src:rw"
+    working_dir: "/app"
