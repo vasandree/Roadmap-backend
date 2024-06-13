@@ -23,6 +23,8 @@ var app = builder.Build();
 
 app.ConfigureRoadmapInfrastructure();
 
+app.UseMiddleware();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -36,7 +38,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseMiddleware();
 
 app.Run();
