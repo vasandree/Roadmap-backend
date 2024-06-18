@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Roadmap.Domain.Entities;
 
-public class RefreshToken
+public class RefreshToken : GenericEntity
 {
-    [Key] 
     [Required] 
     public string TokenString { get; set; }
 

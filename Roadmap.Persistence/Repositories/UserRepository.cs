@@ -14,11 +14,11 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         _context = context;
     }
 
-    public async Task<User> GetById(Guid id)
+    public new async Task<User> GetById(Guid id)
     {
         return (await _context.Users
             .Include(x=>x.RefreshTokens)
-            .FirstOrDefaultAsync(x => x.UserId == id)!);
+            .FirstOrDefaultAsync(x => x.Id == id)!);
     }
 
 
@@ -30,11 +30,6 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     public async Task<User> GetByUsername(string username)
     {
         return (await _context.Users.FirstOrDefaultAsync(x => x.Username == username)!);
-    }
-
-    public async Task<bool> CheckIfIdExists(Guid id)
-    {
-        return await _context.Users.AnyAsync(x => x.UserId == id);
     }
 
     public async Task<bool> CheckIfEmailExists(string email)

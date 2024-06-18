@@ -43,18 +43,44 @@ namespace Roadmap.Infrastructure.Migrations
                     b.ToTable("ExpiredTokens");
                 });
 
-            modelBuilder.Entity("Roadmap.Domain.Entities.RefreshToken", b =>
+            modelBuilder.Entity("Roadmap.Domain.Entities.PrivateAccess", b =>
                 {
-                    b.Property<string>("TokenString")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<Guid>("RoadmapId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("TokenString");
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoadmapId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PrivateAccesses");
+                });
+
+            modelBuilder.Entity("Roadmap.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TokenString")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("TokenString")
                         .IsUnique();
@@ -64,9 +90,40 @@ namespace Roadmap.Infrastructure.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("Roadmap.Domain.Entities.Roadmap", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Roadmaps");
+                });
+
             modelBuilder.Entity("Roadmap.Domain.Entities.User", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -82,7 +139,7 @@ namespace Roadmap.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -91,6 +148,25 @@ namespace Roadmap.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Roadmap.Domain.Entities.PrivateAccess", b =>
+                {
+                    b.HasOne("Roadmap.Domain.Entities.Roadmap", "Roadmap")
+                        .WithMany("PrivateAccesses")
+                        .HasForeignKey("RoadmapId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Roadmap.Domain.Entities.User", "User")
+                        .WithMany("PrivateAccesses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Roadmap");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Roadmap.Domain.Entities.RefreshToken", b =>
@@ -104,8 +180,28 @@ namespace Roadmap.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Roadmap.Domain.Entities.Roadmap", b =>
+                {
+                    b.HasOne("Roadmap.Domain.Entities.User", "User")
+                        .WithMany("CreatedRoadmaps")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Roadmap.Domain.Entities.Roadmap", b =>
+                {
+                    b.Navigation("PrivateAccesses");
+                });
+
             modelBuilder.Entity("Roadmap.Domain.Entities.User", b =>
                 {
+                    b.Navigation("CreatedRoadmaps");
+
+                    b.Navigation("PrivateAccesses");
+
                     b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618

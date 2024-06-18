@@ -43,7 +43,7 @@ public class UserService : IUserService
 
         var user = new User
         {
-            UserId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             Email = registerDto.Email,
             Username = registerDto.Username,
             Password = passwordHash,
@@ -52,7 +52,7 @@ public class UserService : IUserService
         var refreshToken = new RefreshToken
         {
             TokenString = _jwt.GenerateRefreshTokenString(),
-            UserId = user.UserId,
+            UserId = user.Id,
             ExpiryDate = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshDaysLifeTime")),
             User = user
         };
@@ -63,7 +63,7 @@ public class UserService : IUserService
 
         return new TokensDto
         {
-            AccessToken = _jwt.GenerateTokenString(user.UserId, user.Email, user.Username),
+            AccessToken = _jwt.GenerateTokenString(user.Id, user.Email, user.Username),
             RefreshToken = refreshToken.TokenString
         };
     }
@@ -86,7 +86,7 @@ public class UserService : IUserService
         var refreshToken = new RefreshToken
         {
             TokenString = _jwt.GenerateRefreshTokenString(),
-            UserId = user.UserId,
+            UserId = user.Id,
             ExpiryDate = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshDaysLifeTime")),
             User = user
         };
@@ -95,7 +95,7 @@ public class UserService : IUserService
 
         return new TokensDto
         {
-            AccessToken = _jwt.GenerateTokenString(user.UserId, user.Email, user.Username),
+            AccessToken = _jwt.GenerateTokenString(user.Id, user.Email, user.Username),
             RefreshToken = refreshToken.TokenString
         };
     }
@@ -159,7 +159,7 @@ public class UserService : IUserService
         var refreshToken = new RefreshToken
         {
             TokenString = _jwt.GenerateRefreshTokenString(),
-            UserId = user.UserId,
+            UserId = user.Id,
             ExpiryDate = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("Jwt:RefreshDaysLifeTime")),
             User = user
         };
@@ -168,7 +168,7 @@ public class UserService : IUserService
 
         return new TokensDto
         {
-            AccessToken = _jwt.GenerateTokenString(user.UserId, user.Email, user.Username),
+            AccessToken = _jwt.GenerateTokenString(user.Id, user.Email, user.Username),
             RefreshToken = refreshToken.TokenString
         };
     }
