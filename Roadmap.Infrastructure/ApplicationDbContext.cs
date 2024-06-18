@@ -18,7 +18,7 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<Domain.Entities.Roadmap> Roadmaps { get; set; }
     
-    public DbSet<PrivateAccess> PrivateAccesses { get; set; }
+    public DbSet<PrivateAccess?> PrivateAccesses { get; set; }
     public DbSet<StaredRoadmap> StaredRoadmaps { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
