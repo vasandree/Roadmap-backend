@@ -34,6 +34,11 @@ public class MiddlewareService
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync(new { message = exception.Message });
         }
+        catch (Forbidden exception)
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await context.Response.WriteAsJsonAsync(new { message = exception.Message });
+        }
         catch (NotFound exception)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;

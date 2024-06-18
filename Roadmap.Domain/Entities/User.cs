@@ -2,12 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Roadmap.Domain.Entities;
 
-public class User
+public class User : GenericEntity
 {
-    [Key]
-    [Required]
-    public Guid UserId { get; set; }
-    
     [Required]
     public string Email { get; set; }
     
@@ -18,4 +14,7 @@ public class User
     public string Password { get; set; }
 
     public IEnumerable<RefreshToken>? RefreshTokens { get; set; }
+    public IEnumerable<Roadmap>? CreatedRoadmaps { get; set; }
+    public IEnumerable<PrivateAccess>? PrivateAccesses { get; set; }
+    public IEnumerable<StaredRoadmap>? StaredRoadmaps { get; set; }
 }
