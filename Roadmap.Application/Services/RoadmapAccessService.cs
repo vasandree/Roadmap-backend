@@ -27,6 +27,10 @@ public class RoadmapAccessService : IRoadmapAccessService
 
         var roadmap = await _roadmapRepository.GetById(roadmapId);
 
+        if (roadmap.Status == Status.Public)
+            throw new BadRequest("Roadmap is already published");
+
+        
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound("User does not exist");
 
@@ -49,6 +53,9 @@ public class RoadmapAccessService : IRoadmapAccessService
 
         var roadmap = await _roadmapRepository.GetById(roadmapId);
 
+        if (roadmap.Status == Status.Public)
+            throw new BadRequest("Roadmap is published. You can't edit it");
+        
         if (!await _repository.CheckIfIdExists(creatorId))
             throw new NotFound("User does not exist");
 
@@ -66,8 +73,8 @@ public class RoadmapAccessService : IRoadmapAccessService
             await _accessRepository.CreateAsync(new PrivateAccess
             {
                 Id = Guid.NewGuid(),
-                RoadmapId = default,
-                UserId = default,
+                RoadmapId = roadmapId,
+                UserId = id,
                 User = await _repository.GetById(id),
                 Roadmap = roadmap
             });
@@ -84,6 +91,9 @@ public class RoadmapAccessService : IRoadmapAccessService
 
         var roadmap = await _roadmapRepository.GetById(roadmapId);
 
+        if (roadmap.Status == Status.Public)
+            throw new BadRequest("Roadmap is published. You can't edit it");
+        
         if (!await _repository.CheckIfIdExists(creatorId))
             throw new NotFound("User does not exist");
 

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using Common.Exceptions;
 using Roadmap.Application.Dtos.Requests;
@@ -29,7 +30,7 @@ public class RoadmapService : IRoadmapService
     }
 
 
-    public async Task<RoadmapResponseDto> GetRoadmap(Guid roadmapId, Guid userId)
+    public async Task<RoadmapResponseDto> GetRoadmap(Guid roadmapId, Guid? userId)
     {
         if (!await _roadmapRepository.CheckIfIdExists(roadmapId))
             throw new NotFound($"Roadmap with id={roadmapId} not found");
@@ -38,13 +39,32 @@ public class RoadmapService : IRoadmapService
 
         if (roadmap.Status == Status.Public || roadmap.UserId == userId)
         {
-            return _mapper.Map<RoadmapResponseDto>(roadmap);
+            var dto = _mapper.Map<RoadmapResponseDto>(roadmap);
+            
+            if (userId.HasValue && _staredRoadmap.IsStared(userId.Value, roadmap.Id))
+            {
+                dto.IsStared = true;
+            }
+
+            return dto;
         }
 
-        if (!await _accessRepository.CheckIfUserHasAccess(roadmapId, userId))
-            throw new Forbidden($"User does not have access to roadmap with id={roadmapId}");
+        if (userId != null)
+        {
+            if (!await _accessRepository.CheckIfUserHasAccess(roadmapId, userId.Value))
+                throw new Forbidden($"User does not have access to roadmap with id={roadmapId}");
 
-        return _mapper.Map<RoadmapResponseDto>(roadmap);
+            var dto = _mapper.Map<RoadmapResponseDto>(roadmap);
+            
+            if ( _staredRoadmap.IsStared(userId.Value, roadmap.Id))
+            {
+                dto.IsStared = true;
+            }
+
+            return dto;
+        }
+
+        throw new Forbidden($"User does not have access to roadmap with id={roadmapId}");
     }
 
     public async Task CreateRoadMap(RoadmapRequestDto roadmapRequestDto, Guid userId)
@@ -60,7 +80,7 @@ public class RoadmapService : IRoadmapService
             UserId = userId,
             Name = roadmapRequestDto.Name,
             Description = roadmapRequestDto.Description,
-            Content = String.Empty,
+            Content = JsonDocument.Parse("{}"),
             Status = Status.Private,
             User = user,
         });
@@ -73,6 +93,9 @@ public class RoadmapService : IRoadmapService
 
         var roadmap = await _roadmapRepository.GetById(roadmapId);
 
+        if (roadmap.Status == Status.Public)
+            throw new BadRequest("Roadmap is published. You can't edit it");
+        
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound("User does not exist");
 
@@ -105,20 +128,11 @@ public class RoadmapService : IRoadmapService
         await _roadmapRepository.DeleteAsync(roadmap);
     }
 
-    public async Task<RoadmapsPagedDto> GetRoadmaps(string name, int page)
+    public async Task<RoadmapsPagedDto> GetRoadmaps(Guid? userId, string? name, int page)
     {
-
         var roadmaps = await _roadmapRepository.GetPublishedRoadmaps(name);
-        
-        int totalRoadmapsCount = roadmaps.Count;
-        var pagedRoadmaps = roadmaps.OrderByDescending(x=>x.Stared?.Count()).Skip((page - 1) * 10).Take(10).ToList();
-        int totalPages = (int)Math.Ceiling((double)totalRoadmapsCount / 10);
-    
-        return new RoadmapsPagedDto
-        {
-            Roadmaps = pagedRoadmaps.Select(u => _mapper.Map<RoadmapPagedDto>(u)).ToList(),
-            Pagination = new Pagination(10, totalPages, page)
-        };
+
+        return GetPagedRoadmaps(roadmaps, page, userId);
     }
 
     public async Task<RoadmapsPagedDto> GetMyRoadmaps(Guid userId, int page)
@@ -126,18 +140,9 @@ public class RoadmapService : IRoadmapService
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound($"User with id={userId} not found");
 
-        var roadmaps = await _roadmapRepository.Find(x => x.UserId == userId);
-    
-        int totalRoadmapsCount = roadmaps.Count;
-        var pagedRoadmaps = roadmaps.OrderByDescending(x=>x.Stared?.Count()).Skip((page - 1) * 10).Take(10).ToList();
+        var roadmaps = await _roadmapRepository.GetUsersRoadmaps(userId);
 
-        int totalPages = (int)Math.Ceiling((double)totalRoadmapsCount / 10);
-    
-        return new RoadmapsPagedDto
-        {
-            Roadmaps = pagedRoadmaps.Select(u => _mapper.Map<RoadmapPagedDto>(u)).ToList(),
-            Pagination = new Pagination(10, totalPages, page)
-        };
+        return GetPagedRoadmaps(roadmaps, page, userId);
     }
 
 
@@ -145,17 +150,40 @@ public class RoadmapService : IRoadmapService
     {
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound($"User with id={userId} not found");
-        
+
         var roadmaps = await _staredRoadmap.GetStaredRoadmaps(userId);
-    
+
+        return GetPagedRoadmaps(roadmaps, page, userId);
+    }
+
+    private RoadmapsPagedDto GetPagedRoadmaps(List<Domain.Entities.Roadmap> roadmaps, int page, Guid? userId)
+    {
         int totalRoadmapsCount = roadmaps.Count;
-        var pagedRoadmaps = roadmaps.OrderByDescending(x=>x.Stared?.Count()).Skip((page - 1) * 10).Take(10).ToList();
+        var pagedRoadmaps = roadmaps
+            .OrderByDescending(x => x.Stared?.Count() ?? 0)
+            .Skip((page - 1) * 10)
+            .Take(10)
+            .ToList();
 
         int totalPages = (int)Math.Ceiling((double)totalRoadmapsCount / 10);
-    
+
+        var dto = new List<RoadmapPagedDto>();
+
+        foreach (var roadmap in pagedRoadmaps)
+        {
+            var roadmapDto = _mapper.Map<RoadmapPagedDto>(roadmap);
+
+            if (userId.HasValue && _staredRoadmap.IsStared(userId.Value, roadmap.Id))
+            {
+                roadmapDto.IsStared = true;
+            }
+
+            dto.Add(roadmapDto);
+        }
+
         return new RoadmapsPagedDto
         {
-            Roadmaps = pagedRoadmaps.Select(u => _mapper.Map<RoadmapPagedDto>(u)).ToList(),
+            Roadmaps = dto,
             Pagination = new Pagination(10, totalPages, page)
         };
     }

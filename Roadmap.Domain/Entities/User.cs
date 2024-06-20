@@ -17,4 +17,6 @@ public class User : GenericEntity
     public IEnumerable<Roadmap>? CreatedRoadmaps { get; set; }
     public IEnumerable<PrivateAccess>? PrivateAccesses { get; set; }
     public IEnumerable<StaredRoadmap>? StaredRoadmaps { get; set; }
+    
+    public List<Guid>? RecentlyVisited { get; set; }
 }

@@ -22,4 +22,9 @@ public class StaredRoadmapRepository : GenericRepository<StaredRoadmap>, IStared
             .Select(x=>x.Roadmap)
             .ToListAsync();
     }
+
+    public bool IsStared(Guid userId, Guid roadmapId)
+    {
+        return _context.StaredRoadmaps.Any(x => x.UserId == userId && x.RoadmapId == roadmapId);
+    }
 }

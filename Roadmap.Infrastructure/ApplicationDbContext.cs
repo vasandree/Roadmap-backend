@@ -18,7 +18,7 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<Domain.Entities.Roadmap> Roadmaps { get; set; }
     
-    public DbSet<PrivateAccess?> PrivateAccesses { get; set; }
+    public DbSet<PrivateAccess> PrivateAccesses { get; set; }
     public DbSet<StaredRoadmap> StaredRoadmaps { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,6 +38,10 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(r => r.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<Domain.Entities.Roadmap>()
+            .Property(r => r.Content)
+            .HasColumnType("jsonb");
 
         modelBuilder.Entity<PrivateAccess>()
             .HasOne(pa => pa.Roadmap)
