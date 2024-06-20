@@ -17,6 +17,8 @@ public static class RoadmapApplicationConfigurator
 
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IJwtService, JwtService>();
+        builder.Services.AddScoped<IRoadmapService, RoadmapService>();
+        builder.Services.AddScoped<IRoadmapAccessService, RoadmapAccessService>();
 
         builder.Services.AddHostedService<CleanExpiredRefreshTokens>();
         builder.Services.AddHostedService<CleanExpiredAccessTokens>();

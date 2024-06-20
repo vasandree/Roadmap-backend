@@ -36,7 +36,10 @@ public class CleanExpiredRefreshTokens : BackgroundService
             .Where(rt => rt.ExpiryDate < currentTime)
             .ToListAsync();
 
-        dbContext.RefreshTokens.RemoveRange(expiredTokens);
-        await dbContext.SaveChangesAsync();
+        if (expiredTokens.Any())
+        {
+            dbContext.RefreshTokens.RemoveRange(expiredTokens);
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

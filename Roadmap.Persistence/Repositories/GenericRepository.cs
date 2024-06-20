@@ -1,10 +1,11 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Roadmap.Application.Interfaces.Repositories;
+using Roadmap.Domain.Entities;
 
 namespace Roadmap.Persistence.Repositories;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : class
+public class GenericRepository<T> : IGenericRepository<T> where T : GenericEntity
 {
     private readonly DbContext _context;
     private readonly DbSet<T> _dbSet;
@@ -14,7 +15,17 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
         _dbSet = context.Set<T>();
     }
-    
+
+    public async Task<T> GetById(Guid id)
+    {
+        return (await _dbSet.SingleOrDefaultAsync(x => x.Id == id))!;
+    }
+
+    public async Task<bool> CheckIfIdExists(Guid id)
+    {
+        return await _dbSet.AnyAsync(x => x.Id == id);
+    }
+
     public async Task<IReadOnlyList<T>> GetAllAsync()
     {
         return await _dbSet.AsNoTracking().ToListAsync();

@@ -8,8 +8,12 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<User, UserDto>().
-            ForMember(x=>x.Id, o =>
-                o.MapFrom(user => user.UserId));
+        CreateMap<User, UserDto>();
+        CreateMap<Domain.Entities.Roadmap, RoadmapResponseDto>()
+            .ForMember(x => x.StarsCount, o
+                => o.MapFrom(x => (x.Stared ?? Array.Empty<StaredRoadmap>()).Count()));
+        CreateMap<Domain.Entities.Roadmap,RoadmapPagedDto>()
+            .ForMember(x => x.StarsCount, o
+                => o.MapFrom(x => (x.Stared ?? Array.Empty<StaredRoadmap>()).Count()));
     }
 }

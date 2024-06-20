@@ -15,6 +15,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     public DbSet<ExpiredToken> ExpiredTokens { get; set; }
+    
+    public DbSet<Domain.Entities.Roadmap> Roadmaps { get; set; }
+    
+    public DbSet<PrivateAccess> PrivateAccesses { get; set; }
+    public DbSet<StaredRoadmap> StaredRoadmaps { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,6 +32,45 @@ public class ApplicationDbContext : DbContext
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<Domain.Entities.Roadmap>()
+            .HasOne(r => r.User)
+            .WithMany(u => u.CreatedRoadmaps)
+            .HasForeignKey(r => r.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<Domain.Entities.Roadmap>()
+            .Property(r => r.Content)
+            .HasColumnType("jsonb");
+
+        modelBuilder.Entity<PrivateAccess>()
+            .HasOne(pa => pa.Roadmap)
+            .WithMany(r => r.PrivateAccesses)
+            .HasForeignKey(pa => pa.RoadmapId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<PrivateAccess>()
+            .HasOne(pa => pa.User)
+            .WithMany(r => r.PrivateAccesses)
+            .HasForeignKey(pa => pa.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<StaredRoadmap>()
+            .HasOne(pa => pa.Roadmap)
+            .WithMany(r => r.Stared)
+            .HasForeignKey(pa => pa.RoadmapId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<StaredRoadmap>()
+            .HasOne(pa => pa.User)
+            .WithMany(r => r.StaredRoadmaps)
+            .HasForeignKey(pa => pa.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<RefreshToken>()
             .HasIndex(rt => rt.TokenString)
             .IsUnique();
