@@ -6,6 +6,7 @@ using Roadmap.Application.Dtos.Responses;
 using Roadmap.Application.Dtos.Responses.Paged;
 using Roadmap.Application.Interfaces.Repositories;
 using Roadmap.Application.Interfaces.Services;
+using Roadmap.Domain.Entities;
 using Roadmap.Domain.Enums;
 
 namespace Roadmap.Application.Services;
@@ -41,9 +42,14 @@ public class RoadmapService : IRoadmapService
         {
             var dto = _mapper.Map<RoadmapResponseDto>(roadmap);
             
-            if (userId.HasValue && _staredRoadmap.IsStared(userId.Value, roadmap.Id))
+            if (userId.HasValue && userId != roadmap.UserId)
             {
-                dto.IsStared = true;
+                if (_staredRoadmap.IsStared(userId.Value, roadmap.Id))
+                {
+                    dto.IsStared = true;
+                }
+
+                await AddRecentlyVisited(userId.Value, roadmap.Id);
             }
 
             return dto;
@@ -60,7 +66,7 @@ public class RoadmapService : IRoadmapService
             {
                 dto.IsStared = true;
             }
-
+            await AddRecentlyVisited(userId.Value, roadmap.Id);
             return dto;
         }
 
@@ -156,6 +162,74 @@ public class RoadmapService : IRoadmapService
         return GetPagedRoadmaps(roadmaps, page, userId);
     }
 
+    public async Task<RoadmapsPagedDto> GetPrivateRoadmaps(Guid userId, int page)
+    {
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound($"User with id={userId} not found");
+
+        var roadmaps = await _accessRepository.GetPrivateRoadmaps(userId);
+
+        return GetPagedRoadmaps(roadmaps, page, userId);
+    }
+
+    public async Task<List<RoadmapPagedDto>> GetRecentRoadmaps(Guid userId)
+    {
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound($"User with id={userId} not found");
+    
+        var user = await _repository.GetById(userId);
+        var roadmapsIds = user.RecentlyVisited;
+
+        if (roadmapsIds == null || !roadmapsIds.Any())
+            return new List<RoadmapPagedDto>();
+
+        var roadmapsTasks = roadmapsIds.Select(async x => 
+        {
+            var roadmap = await _roadmapRepository.GetById(x);
+            return _mapper.Map<RoadmapPagedDto>(roadmap);
+        });
+
+        var roadmaps = await Task.WhenAll(roadmapsTasks);
+
+        return roadmaps.ToList();
+    }
+
+
+    public async Task StarRoadmap(Guid userId, Guid roadmapId)
+    {
+        if (!await _roadmapRepository.CheckIfIdExists(roadmapId))
+            throw new NotFound($"Roadmap with id={roadmapId} not found");
+
+        var roadmap = await _roadmapRepository.GetById(roadmapId);
+
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound("User does not exist");
+
+        var user = await _repository.GetById(userId);
+
+        if (roadmap.UserId == user.Id)
+            throw new BadRequest("You can't mark your own roadmap");
+
+        if (roadmap.Status != Status.Public)
+            throw new BadRequest("Roadmap is not published");
+
+        if (_staredRoadmap.IsStared(user.Id, roadmap.Id))
+        {
+            await _staredRoadmap.DeleteAsync(await _staredRoadmap.GetByUserAndRoadmap(user.Id, roadmap.Id));
+        }
+        else
+        {
+            await _staredRoadmap.CreateAsync(new StaredRoadmap
+            {
+                Id = Guid.NewGuid(),
+                RoadmapId = roadmapId,
+                UserId = userId,
+                User = user,
+                Roadmap = roadmap
+            });
+        }
+    }
+
     private RoadmapsPagedDto GetPagedRoadmaps(List<Domain.Entities.Roadmap> roadmaps, int page, Guid? userId)
     {
         int totalRoadmapsCount = roadmaps.Count;
@@ -186,5 +260,26 @@ public class RoadmapService : IRoadmapService
             Roadmaps = dto,
             Pagination = new Pagination(10, totalPages, page)
         };
+    }
+
+    private async Task AddRecentlyVisited(Guid userId, Guid roadmapId)
+    {
+        var user = await _repository.GetById(userId);
+
+        if (user.RecentlyVisited == null)
+        {
+            user.RecentlyVisited = new List<Guid>();
+        }
+
+        user.RecentlyVisited.Remove(roadmapId);
+
+        user.RecentlyVisited.Insert(0, roadmapId);
+
+        if (user.RecentlyVisited.Count > 5)
+        {
+            user.RecentlyVisited = user.RecentlyVisited.Take(5).ToList();
+        }
+
+        await _repository.UpdateAsync(user);
     }
 }

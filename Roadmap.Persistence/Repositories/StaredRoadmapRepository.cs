@@ -27,4 +27,9 @@ public class StaredRoadmapRepository : GenericRepository<StaredRoadmap>, IStared
     {
         return _context.StaredRoadmaps.Any(x => x.UserId == userId && x.RoadmapId == roadmapId);
     }
+
+    public Task<StaredRoadmap> GetByUserAndRoadmap(Guid userId, Guid roadmapId)
+    {
+        return _context.StaredRoadmaps.FirstOrDefaultAsync(x => x.UserId == userId && x.RoadmapId == roadmapId)!;
+    }
 }

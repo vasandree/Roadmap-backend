@@ -37,7 +37,18 @@ public class RoadmapController : ControllerBase
         return Ok(await _roadmapService.GetStaredRoadmaps(Guid.Parse(User.FindFirst("UserId")!.Value!), page));
     }
 
+    [HttpGet, Authorize("AuthorizationPolicy"), Route("roadmaps/private")]
+    public async Task<IActionResult> GetPrivateRoadmaps(int page = 1)
+    {
+        return Ok(await _roadmapService.GetPrivateRoadmaps(Guid.Parse(User.FindFirst("UserId")!.Value!), page));
+    }
 
+    [HttpGet, Authorize("AuthorizationPolicy"), Route("roadmaps/recent")]
+    public async Task<IActionResult> GetRecentRoadmaps()
+    {
+        return Ok(await _roadmapService.GetRecentRoadmaps(Guid.Parse(User.FindFirst("UserId")!.Value!)));
+    }
+    
     [HttpGet, Route("roadmap/{id}"), Authorize("AuthorizationPolicy"), AllowAnonymous]
     public async Task<IActionResult> GetRoadmap(Guid id)
     {
@@ -66,6 +77,13 @@ public class RoadmapController : ControllerBase
     public async Task<IActionResult> DeleteRoadmap(Guid id)
     {
         await _roadmapService.DeleteRoadmap(id, Guid.Parse(User.FindFirst("UserId")!.Value!));
+        return Ok();
+    }
+    
+    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/star")]
+    public async Task<IActionResult> StarRoadmap(Guid id)
+    {
+        await _roadmapService.StarRoadmap(id, Guid.Parse(User.FindFirst("UserId")!.Value!));
         return Ok();
     }
 }
