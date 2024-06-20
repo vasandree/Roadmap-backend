@@ -42,7 +42,7 @@ public class UserController : ControllerBase
         return Ok();
     }
 
-    [HttpPost, Authorize(Policy = "AuthorizationPolicy"), Route("refresh")]
+    [HttpPost, Route("refresh")]
     public async Task<IActionResult> RefreshToken([FromBody]TokensDto tokensDto)
     {
         return Ok(await _userService.RefreshToken(tokensDto));

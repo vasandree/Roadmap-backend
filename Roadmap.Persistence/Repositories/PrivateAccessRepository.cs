@@ -18,4 +18,9 @@ public class PrivateAccessRepository : GenericRepository<PrivateAccess>, IPrivat
     {
         return await _context.PrivateAccesses.AnyAsync(x => x.UserId == userId && x.RoadmapId == roadmapId);
     }
+
+    public async Task<PrivateAccess> GetByUserAndRoadmap(Guid userId, Guid roadmapId)
+    {
+        return (await _context.PrivateAccesses.FirstOrDefaultAsync(x => x.RoadmapId == roadmapId && x.UserId == userId))!;
+    }
 }

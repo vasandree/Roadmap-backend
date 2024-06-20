@@ -16,14 +16,17 @@ public class RoadmapController : ControllerBase
     }
 
 
-    [HttpGet, Route("roadmaps")]
-    public async Task<IActionResult> GetRoadmaps(string name, int page = 1)
+    [HttpGet, Route("roadmaps"), Authorize("AuthorizationPolicy"), AllowAnonymous]
+    public async Task<IActionResult> GetRoadmaps(string? name, int page = 1)
     {
-        return Ok(await _roadmapService.GetRoadmaps(name, page));
+        var userIdClaim = User.FindFirst("UserId");
+        Guid? userId = userIdClaim != null ? Guid.Parse(userIdClaim.Value) : null;
+
+        return Ok(await _roadmapService.GetRoadmaps(userId, name, page));
     }
 
     [HttpGet, Authorize("AuthorizationPolicy"), Route("roadmaps/my")]
-    public async Task<IActionResult> GetMyRoadmaps(string name, int page = 1)
+    public async Task<IActionResult> GetMyRoadmaps(int page = 1)
     {
         return Ok(await _roadmapService.GetMyRoadmaps(Guid.Parse(User.FindFirst("UserId")!.Value!), page));
     }
@@ -35,10 +38,14 @@ public class RoadmapController : ControllerBase
     }
 
 
-    [HttpGet, Authorize("AuthorizationPolicy"), Route("roadmap/{id}")]
+    [HttpGet, Route("roadmap/{id}"), Authorize("AuthorizationPolicy"), AllowAnonymous]
     public async Task<IActionResult> GetRoadmap(Guid id)
     {
-        return Ok(await _roadmapService.GetRoadmap(id, Guid.Parse(User.FindFirst("UserId")!.Value!)));
+        var userIdClaim = User.FindFirst("UserId");
+        Guid? userId = userIdClaim != null ? Guid.Parse(userIdClaim.Value) : null;
+
+
+        return Ok(await _roadmapService.GetRoadmap(id, userId));
     }
 
     [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap")]
@@ -61,4 +68,4 @@ public class RoadmapController : ControllerBase
         await _roadmapService.DeleteRoadmap(id, Guid.Parse(User.FindFirst("UserId")!.Value!));
         return Ok();
     }
-} 
+}

@@ -38,6 +38,10 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(r => r.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<Domain.Entities.Roadmap>()
+            .Property(r => r.Content)
+            .HasColumnType("jsonb");
 
         modelBuilder.Entity<PrivateAccess>()
             .HasOne(pa => pa.Roadmap)

@@ -11,7 +11,7 @@ public class CleanExpiredAccessTokens : BackgroundService
     private readonly TimeSpan _cleanMinutes;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public CleanExpiredAccessTokens(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory)
+    public CleanExpiredAccessTokens( IServiceScopeFactory serviceScopeFactory)
     {
         _cleanMinutes = TimeSpan.FromMinutes(5);
         _serviceScopeFactory = serviceScopeFactory;
@@ -30,15 +30,15 @@ public class CleanExpiredAccessTokens : BackgroundService
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        
+    
         var expiredTokens = await context.ExpiredTokens
             .Where(token => token.ExpiryDate <= DateTime.UtcNow)
             .ToListAsync(cancellationToken: stoppingToken);
 
-        foreach (var token in expiredTokens)
+        if (expiredTokens.Any())
         {
-            context.ExpiredTokens.Remove(token);
+            context.ExpiredTokens.RemoveRange(expiredTokens);
+            await context.SaveChangesAsync(stoppingToken);
         }
-        await context.SaveChangesAsync(stoppingToken);
     }
 }

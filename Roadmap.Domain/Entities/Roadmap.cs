@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 using Roadmap.Domain.Enums;
 
 namespace Roadmap.Domain.Entities;
@@ -18,7 +19,7 @@ public class Roadmap : GenericEntity
     public string Description { get; set; }
     
     [Required]
-    public string Content { get; set; }
+    public JsonDocument? Content { get; set; }
     
     [Required]
     public Status Status { get; set; }

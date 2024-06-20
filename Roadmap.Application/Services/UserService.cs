@@ -149,13 +149,16 @@ public class UserService : IUserService
         
         var user = await _repository.GetById(userIdFromToken);
         
-        if (user.RefreshTokens.All(x => x.TokenString != tokensDto.RefreshToken))
+        if (user.RefreshTokens != null && user.RefreshTokens.All(x => x.TokenString != tokensDto.RefreshToken))
             throw new BadRequest("Provided token does not exist or does not belong to this user");
-        
-        RefreshToken refreshTokenEntity = user.RefreshTokens.FirstOrDefault(x=>x.TokenString == tokensDto.RefreshToken);
-        await _refresh.DeleteAsync(refreshTokenEntity!);
-        
-        
+
+        if (user.RefreshTokens != null)
+        {
+            var refreshTokenEntity = user.RefreshTokens.FirstOrDefault(x=>x.TokenString == tokensDto.RefreshToken);
+            await _refresh.DeleteAsync(refreshTokenEntity!);
+        }
+
+
         var refreshToken = new RefreshToken
         {
             TokenString = _jwt.GenerateRefreshTokenString(),
