@@ -116,6 +116,29 @@ public class RoadmapService : IRoadmapService
         await _roadmapRepository.UpdateAsync(roadmap);
     }
 
+    public async Task EditRoadmapContent(Guid roadmapId, JsonDocument jsonContent, Guid userId)
+    {
+        if (!await _roadmapRepository.CheckIfIdExists(roadmapId))
+            throw new NotFound($"Roadmap with id={roadmapId} not found");
+
+        var roadmap = await _roadmapRepository.GetById(roadmapId);
+
+        if (roadmap.Status == Status.Public)
+            throw new BadRequest("Roadmap is published. You can't edit it");
+        
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound("User does not exist");
+
+        var user = await _repository.GetById(userId);
+
+        if (roadmap.UserId != user.Id)
+            throw new Forbidden($"User is not a creator of roadmap with id={roadmapId}");
+
+        roadmap.Content = jsonContent;
+
+        await _roadmapRepository.UpdateAsync(roadmap);
+    }
+
     public async Task DeleteRoadmap(Guid roadmapId, Guid userId)
     {
         if (!await _roadmapRepository.CheckIfIdExists(roadmapId))

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Roadmap.Application.Dtos.Requests;
@@ -73,6 +74,13 @@ public class RoadmapController : ControllerBase
         return Ok();
     }
 
+    [HttpPut, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/content")]
+    public async Task<IActionResult> EditRoadmapContent(Guid id, [FromBody]JsonDocument jsonContent)
+    {
+        await _roadmapService.EditRoadmapContent(id, jsonContent, Guid.Parse(User.FindFirst("UserId")!.Value!));
+        return Ok();
+    }
+    
     [HttpDelete, Authorize("AuthorizationPolicy"), Route("roadmap/{id}")]
     public async Task<IActionResult> DeleteRoadmap(Guid id)
     {
