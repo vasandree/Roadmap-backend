@@ -20,6 +20,8 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<PrivateAccess> PrivateAccesses { get; set; }
     public DbSet<StaredRoadmap> StaredRoadmaps { get; set; }
+    
+    public DbSet<Topic> Topics { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
