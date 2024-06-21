@@ -19,7 +19,7 @@ public class RoadmapRepository : GenericRepository<Domain.Entities.Roadmap>, IRo
     {
         return (await _context.Roadmaps
             .Include(x => x.PrivateAccesses)
-            .Include(x=>x.Stared)
+            .Include(x => x.Stared)
             .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.Id == id)!);
     }
@@ -27,27 +27,32 @@ public class RoadmapRepository : GenericRepository<Domain.Entities.Roadmap>, IRo
 
     public async Task<List<Domain.Entities.Roadmap>> GetPublishedRoadmaps(string? name)
     {
-        var roadmaps = _context.Roadmaps.AsQueryable();
+        var roadmapsQuery = _context.Roadmaps
+            .Include(x => x.User)
+            .Include(x => x.Stared)
+            .Where(x => x.Status == Status.Public);
+
         if (!string.IsNullOrEmpty(name))
         {
-            roadmaps = roadmaps.Where(x => x.Name.Contains(name));
+            roadmapsQuery = roadmapsQuery.Where(x => x.Name.Contains(name));
         }
 
-        return await roadmaps.Where(x => x.Status == Status.Public)
-            .Include(x => x.User)
-            .ToListAsync();
+        return await roadmapsQuery.ToListAsync();
     }
-
-    public void RemovePrivateAccess(IEnumerable<PrivateAccess?> privateAccesses)
+    public void RemovePrivateAccess(IEnumerable<PrivateAccess>? privateAccesses)
     {
-        _context.PrivateAccesses.RemoveRange(privateAccesses);
+        if (privateAccesses != null)
+        {
+            _context.PrivateAccesses.RemoveRange(privateAccesses);
+
+        }
     }
 
     public async Task<List<Domain.Entities.Roadmap>> GetUsersRoadmaps(Guid userId)
     {
         return await _context.Roadmaps
             .Include(x => x.User)
-            .Include(x=>x.Stared)
+            .Include(x => x.Stared)
             .Where(x => x.UserId == userId)
             .ToListAsync();
     }

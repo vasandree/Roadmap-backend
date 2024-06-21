@@ -21,17 +21,36 @@ public class PrivateAccessRepository : GenericRepository<PrivateAccess>, IPrivat
 
     public async Task<PrivateAccess> GetByUserAndRoadmap(Guid userId, Guid roadmapId)
     {
-        return (await _context.PrivateAccesses.FirstOrDefaultAsync(x => x.RoadmapId == roadmapId && x.UserId == userId))!;
+        return (await _context.PrivateAccesses.FirstOrDefaultAsync(x => x.RoadmapId == roadmapId && x.UserId == userId))
+            !;
     }
 
     public async Task<List<Domain.Entities.Roadmap>> GetPrivateRoadmaps(Guid userId)
     {
         return await _context.PrivateAccesses
             .Include(x => x.Roadmap)
+            .ThenInclude(x=>x.User)
+            .Include(x => x.Roadmap)
+            .ThenInclude(x=>x.Stared)
             .Where(x => x.UserId == userId)
-            .Select(x => x.Roadmap)
-            .Include(x => x.User)
-            .Include(x => x.Stared)
+            .Select(x=>x.Roadmap)
             .ToListAsync();
+        
+    }
+
+    public async Task<IReadOnlyList<User>> GetUsers(Guid roadmapId, string? name)
+    {
+        var users = await _context.PrivateAccesses
+            .Include(x => x.User)
+            .Where(x => x.RoadmapId == roadmapId)
+            .Select(x => x.User)
+            .ToListAsync();
+
+        if (!string.IsNullOrEmpty(name))
+        {
+            users = users.Where(x => x.Username.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        return users.AsReadOnly();
     }
 }

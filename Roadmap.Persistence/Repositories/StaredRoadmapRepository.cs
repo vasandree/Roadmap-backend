@@ -17,8 +17,11 @@ public class StaredRoadmapRepository : GenericRepository<StaredRoadmap>, IStared
     public async Task<List<Domain.Entities.Roadmap>> GetStaredRoadmaps(Guid userId)
     {
         return await _context.StaredRoadmaps
-            .Where(x => x.UserId == userId)
             .Include(x => x.Roadmap)
+            .ThenInclude(x=>x.User)
+            .Include(x => x.Roadmap)
+            .ThenInclude(x=>x.Stared)
+            .Where(x => x.UserId == userId)
             .Select(x=>x.Roadmap)
             .ToListAsync();
     }

@@ -9,4 +9,5 @@ public interface IPrivateAccessRepository : IGenericRepository<PrivateAccess>
     Task<PrivateAccess> GetByUserAndRoadmap(Guid userId, Guid roadmapId);
 
     Task<List<Domain.Entities.Roadmap>> GetPrivateRoadmaps(Guid userId);
+    Task<IReadOnlyList<User>> GetUsers(Guid roadmapId, string? name);
 }

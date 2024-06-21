@@ -176,13 +176,23 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<IReadOnlyList<UserDto>> GetUsers(string username)
+    public async Task<IReadOnlyList<UserDto>> GetUsers(Guid? userId, string username)
     {
         var users = await _repository.GetAsQueryable();
 
         if (!string.IsNullOrEmpty(username))
         {
             users = GetUsersByUsername(users, username);
+        }
+    
+        if (userId.HasValue)
+        {
+            if (!await _repository.CheckIfIdExists(userId.Value))
+            {
+                throw new NotFound("User does not exist");
+            }
+
+            users = users.Where(u => u.Id != userId.Value);
         }
 
         return await users.Take(10).Select(u => _mapper.Map<UserDto>(u)).ToListAsync();

@@ -209,7 +209,13 @@ public class RoadmapService : IRoadmapService
         var roadmapsTasks = roadmapsIds.Select(async x => 
         {
             var roadmap = await _roadmapRepository.GetById(x);
-            return _mapper.Map<RoadmapPagedDto>(roadmap);
+            var roadmapDto = _mapper.Map<RoadmapPagedDto>(roadmap);
+
+            if ( _staredRoadmap.IsStared(userId, roadmap.Id))
+            {
+                roadmapDto.IsStared = true;
+            }
+            return roadmapDto;
         });
 
         var roadmaps = await Task.WhenAll(roadmapsTasks);
@@ -252,7 +258,6 @@ public class RoadmapService : IRoadmapService
             });
         }
     }
-
     private RoadmapsPagedDto GetPagedRoadmaps(List<Domain.Entities.Roadmap> roadmaps, int page, Guid? userId)
     {
         int totalRoadmapsCount = roadmaps.Count;

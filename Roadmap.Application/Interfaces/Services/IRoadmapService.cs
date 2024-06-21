@@ -10,7 +10,6 @@ public interface IRoadmapService
     Task<RoadmapResponseDto> GetRoadmap(Guid roadmapId, Guid? userId);
     Task CreateRoadMap(RoadmapRequestDto roadmapRequestDto, Guid userId);
     Task EditRoadmap(Guid roadmapId, RoadmapRequestDto roadmapRequestDto, Guid userId);
-    
     Task EditRoadmapContent(Guid roadmapId, JsonDocument jsonContent, Guid userId);
     Task DeleteRoadmap(Guid roadmapId, Guid userId);
     Task<RoadmapsPagedDto> GetRoadmaps(Guid? userId, string? name, int page);
@@ -18,5 +17,4 @@ public interface IRoadmapService
     Task<RoadmapsPagedDto> GetStaredRoadmaps(Guid userId, int page);
     Task<RoadmapsPagedDto> GetPrivateRoadmaps(Guid userId, int page);
     Task<List<RoadmapPagedDto>> GetRecentRoadmaps(Guid userId);
-    Task StarRoadmap(Guid userId, Guid roadmapId);
-}
+    Task StarRoadmap(Guid userId, Guid roadmapId); }

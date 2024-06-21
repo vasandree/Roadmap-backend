@@ -1,4 +1,6 @@
+using AutoMapper;
 using Common.Exceptions;
+using Roadmap.Application.Dtos.Responses;
 using Roadmap.Application.Interfaces.Repositories;
 using Roadmap.Application.Interfaces.Services;
 using Roadmap.Domain.Entities;
@@ -11,13 +13,15 @@ public class RoadmapAccessService : IRoadmapAccessService
     private readonly IRoadmapRepository _roadmapRepository;
     private readonly IPrivateAccessRepository _accessRepository;
     private readonly IUserRepository _repository;
+    private readonly IMapper _mapper;
 
     public RoadmapAccessService(IRoadmapRepository roadmapRepository, IUserRepository repository,
-        IPrivateAccessRepository accessRepository)
+        IPrivateAccessRepository accessRepository, IMapper mapper)
     {
         _roadmapRepository = roadmapRepository;
         _repository = repository;
         _accessRepository = accessRepository;
+        _mapper = mapper;
     }
 
     public async Task PublishRoadmap(Guid userId, Guid roadmapId)
@@ -121,5 +125,28 @@ public class RoadmapAccessService : IRoadmapAccessService
 
         if (roadmap.PrivateAccesses == null)
             roadmap.Status = Status.Private;
+    }
+
+    public async Task<List<UserDto>> GetPrivateUsers(Guid userId, Guid roadmapId, string? name)
+    {
+        if (!await _roadmapRepository.CheckIfIdExists(roadmapId))
+            throw new NotFound($"Roadmap with id={roadmapId} not found");
+
+        var roadmap = await _roadmapRepository.GetById(roadmapId);
+
+        if (roadmap.Status == Status.Public)
+            throw new BadRequest("Roadmap is published. You can't edit it");
+        
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound("User does not exist");
+
+        var user = await _repository.GetById(userId);
+
+        if (roadmap.UserId != user.Id)
+            throw new Forbidden($"User is not a creator of roadmap with id={roadmapId}");
+
+        var users = await _accessRepository.GetUsers(roadmapId, name);
+        
+        return  users.Take(10).Select(u => _mapper.Map<UserDto>(u)).ToList();
     }
 }

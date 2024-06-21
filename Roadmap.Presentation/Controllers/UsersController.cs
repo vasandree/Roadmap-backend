@@ -4,7 +4,7 @@ using Roadmap.Application.Interfaces.Services;
 
 namespace Roadmap.Controllers;
 
-[ApiController, Route("api/users")]
+[ApiController, Route("api")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -14,9 +14,9 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet, Authorize(Policy = "AuthorizationPolicy")]
+    [HttpGet, Authorize(Policy = "AuthorizationPolicy"), Route("users"), AllowAnonymous]
     public async Task<IActionResult> GetUsers([FromQuery] string username)
     {
-        return Ok(await _userService.GetUsers(username));
+        return Ok(await _userService.GetUsers(Guid.Parse(User.FindFirst("UserId")!.Value!),username));
     }
 }

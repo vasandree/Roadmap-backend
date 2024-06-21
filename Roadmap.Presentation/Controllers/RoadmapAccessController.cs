@@ -35,4 +35,10 @@ public class RoadmapAccessController : ControllerBase
             id);
         return Ok();
     }
+    
+    [HttpGet, Authorize(Policy = "AuthorizationPolicy"), Route("{id}/users")]
+    public async Task<IActionResult> GetUsersForRoadmap(Guid id, string? username)
+    {
+        return Ok(await _roadmapAccessService.GetPrivateUsers(Guid.Parse(User.FindFirst("UserId")!.Value!), id, username));
+    }
 }

@@ -144,6 +144,33 @@ namespace Roadmap.Infrastructure.Migrations
                     b.ToTable("StaredRoadmaps");
                 });
 
+            modelBuilder.Entity("Roadmap.Domain.Entities.Topic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RoadmapId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoadmapId");
+
+                    b.ToTable("Topics");
+                });
+
             modelBuilder.Entity("Roadmap.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -236,11 +263,24 @@ namespace Roadmap.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Roadmap.Domain.Entities.Topic", b =>
+                {
+                    b.HasOne("Roadmap.Domain.Entities.Roadmap", "Roadmap")
+                        .WithMany("Topics")
+                        .HasForeignKey("RoadmapId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Roadmap");
+                });
+
             modelBuilder.Entity("Roadmap.Domain.Entities.Roadmap", b =>
                 {
                     b.Navigation("PrivateAccesses");
 
                     b.Navigation("Stared");
+
+                    b.Navigation("Topics");
                 });
 
             modelBuilder.Entity("Roadmap.Domain.Entities.User", b =>

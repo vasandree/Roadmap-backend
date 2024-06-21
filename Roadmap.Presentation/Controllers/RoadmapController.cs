@@ -91,7 +91,7 @@ public class RoadmapController : ControllerBase
     [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/star")]
     public async Task<IActionResult> StarRoadmap(Guid id)
     {
-        await _roadmapService.StarRoadmap(id, Guid.Parse(User.FindFirst("UserId")!.Value!));
+        await _roadmapService.StarRoadmap(Guid.Parse(User.FindFirst("UserId")!.Value!), id);
         return Ok();
     }
 }
