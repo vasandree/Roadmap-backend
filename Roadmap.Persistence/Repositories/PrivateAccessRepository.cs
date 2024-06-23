@@ -31,7 +31,6 @@ public class PrivateAccessRepository : GenericRepository<PrivateAccess>, IPrivat
             .Include(x => x.Roadmap)
             .ThenInclude(x=>x.User)
             .Include(x => x.Roadmap)
-            .ThenInclude(x=>x.Stared)
             .Where(x => x.UserId == userId)
             .Select(x=>x.Roadmap)
             .ToListAsync();

@@ -19,7 +19,6 @@ public class RoadmapRepository : GenericRepository<Domain.Entities.Roadmap>, IRo
     {
         return (await _context.Roadmaps
             .Include(x => x.PrivateAccesses)
-            .Include(x => x.Stared)
             .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.Id == id)!);
     }
@@ -29,7 +28,6 @@ public class RoadmapRepository : GenericRepository<Domain.Entities.Roadmap>, IRo
     {
         var roadmapsQuery = _context.Roadmaps
             .Include(x => x.User)
-            .Include(x => x.Stared)
             .Where(x => x.Status == Status.Public);
 
         if (!string.IsNullOrEmpty(name))
@@ -52,8 +50,15 @@ public class RoadmapRepository : GenericRepository<Domain.Entities.Roadmap>, IRo
     {
         return await _context.Roadmaps
             .Include(x => x.User)
-            .Include(x => x.Stared)
             .Where(x => x.UserId == userId)
+            .ToListAsync();
+    }
+    
+    public async Task<List<Domain.Entities.Roadmap>> GetRoadmapsByIds(List<Guid> roadmapIds)
+    {
+        return await _context.Roadmaps
+            .Include(x=>x.User)
+            .Where(r => roadmapIds.Contains(r.Id))
             .ToListAsync();
     }
 }

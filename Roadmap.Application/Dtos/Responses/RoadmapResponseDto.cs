@@ -24,6 +24,9 @@ public class RoadmapResponseDto
     public int StarsCount { get; set; }
     
     [Required]
+    public int TopicsCount { get; set; }
+    
+    [Required]
     public string Content { get; set; }
     
     [Required]

@@ -19,7 +19,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<Domain.Entities.Roadmap> Roadmaps { get; set; }
     
     public DbSet<PrivateAccess> PrivateAccesses { get; set; }
-    public DbSet<StaredRoadmap> StaredRoadmaps { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,20 +52,6 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<PrivateAccess>()
             .HasOne(pa => pa.User)
             .WithMany(r => r.PrivateAccesses)
-            .HasForeignKey(pa => pa.UserId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-        
-        modelBuilder.Entity<StaredRoadmap>()
-            .HasOne(pa => pa.Roadmap)
-            .WithMany(r => r.Stared)
-            .HasForeignKey(pa => pa.RoadmapId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-        
-        modelBuilder.Entity<StaredRoadmap>()
-            .HasOne(pa => pa.User)
-            .WithMany(r => r.StaredRoadmaps)
             .HasForeignKey(pa => pa.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);

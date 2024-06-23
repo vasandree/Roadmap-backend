@@ -22,6 +22,9 @@ public class RoadmapPagedDto
     
     [Required]
     public int StarsCount { get; set; }
+    
+    [Required]
+    public int TopicsCount { get; set; }
 
     [Required]
     public bool IsStared { get; set; }

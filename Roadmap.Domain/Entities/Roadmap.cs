@@ -25,8 +25,13 @@ public class Roadmap : GenericEntity
     public Status Status { get; set; }
     
     [Required]
+    public int StarsCount { get; set; }
+    
+    [Required]
+    public int TopicsCount { get; set; }
+    
+    [Required]
     public User User { get; set; }
     
     public IEnumerable<PrivateAccess>? PrivateAccesses { get; set; }
-    public IEnumerable<StaredRoadmap>? Stared{ get; set; }
 }
