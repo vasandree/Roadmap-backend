@@ -9,7 +9,6 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<User, UserDto>();
-        CreateMap<Topic, TopicDto>();
         CreateMap<Domain.Entities.Roadmap, RoadmapResponseDto>()
             .ForMember(x => x.StarsCount, o
                 => o.MapFrom(x => (x.Stared ?? Array.Empty<StaredRoadmap>()).Count()));

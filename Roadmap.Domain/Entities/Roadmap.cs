@@ -29,5 +29,4 @@ public class Roadmap : GenericEntity
     
     public IEnumerable<PrivateAccess>? PrivateAccesses { get; set; }
     public IEnumerable<StaredRoadmap>? Stared{ get; set; }
-    public IEnumerable<Topic>? Topics { get; set; }
 }
