@@ -81,9 +81,12 @@ public class RoadmapService : IRoadmapService
             UserId = userId,
             Name = roadmapRequestDto.Name,
             Description = roadmapRequestDto.Description,
-            Content = JsonDocument.Parse("{}"),
+            Content = null,
             Status = Status.Private,
+            StarsCount = 0,
+            TopicsCount = 0,
             User = user,
+            PrivateAccesses = new List<PrivateAccess>()
         });
     }
 
@@ -129,9 +132,21 @@ public class RoadmapService : IRoadmapService
         if (roadmap.UserId != user.Id)
             throw new Forbidden($"User is not a creator of roadmap with id={roadmapId}");
 
-        roadmap.Content = jsonContent;
+        if (jsonContent != roadmap.Content)
+        {
+            if (roadmap.Content != null)
+            {
+                var oldTopicsIds = GetNonEdges(roadmap.Content);
+                var newTopicIds = GetNonEdges(jsonContent);
 
-        await _roadmapRepository.UpdateAsync(roadmap);
+                //todo: progress delete
+
+                roadmap.TopicsCount = newTopicIds.Count;
+            }
+
+            roadmap.Content = jsonContent;
+            await _roadmapRepository.UpdateAsync(roadmap);
+        }
     }
 
     public async Task DeleteRoadmap(Guid roadmapId, Guid userId)
@@ -174,17 +189,17 @@ public class RoadmapService : IRoadmapService
     {
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound($"User with id={userId} not found");
-        
+
         var user = await _repository.GetById(userId);
-        
+
         var roadmapIds = user.Stared?.ToList();
-    
+
         if (roadmapIds == null || !roadmapIds.Any())
-            return new RoadmapsPagedDto(); 
-    
+            return new RoadmapsPagedDto();
+
         var roadmaps = await _roadmapRepository.GetRoadmapsByIds(roadmapIds);
 
-        
+
         return await GetPagedRoadmaps(roadmaps, page, userId);
     }
 
@@ -323,5 +338,16 @@ public class RoadmapService : IRoadmapService
         }
 
         await _repository.UpdateAsync(user);
+    }
+
+    private List<Guid> GetNonEdges(JsonDocument jsonDocument)
+    {
+        var jsonElements = jsonDocument.RootElement.EnumerateArray();
+
+        var nonEdgeNodes = jsonElements
+            .Where(element => element.TryGetProperty("shape", out var shape) && shape.GetString() != "edge")
+            .ToList();
+
+        return nonEdgeNodes.Any() ? nonEdgeNodes.Select(element => Guid.Parse(element.GetProperty("id").GetString())).ToList() : new List<Guid>();
     }
 }

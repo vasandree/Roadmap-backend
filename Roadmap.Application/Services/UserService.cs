@@ -37,7 +37,7 @@ public class UserService : IUserService
             throw new Conflict("User with this email already exists");
 
         if (await _repository.CheckIfUsernameExists(registerDto.Username))
-            throw new Conflict("User with this usrename already exists");
+            throw new Conflict("User with this username already exists");
 
         var passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(registerDto.Password, 11);
 
@@ -47,6 +47,11 @@ public class UserService : IUserService
             Email = registerDto.Email,
             Username = registerDto.Username,
             Password = passwordHash,
+            RefreshTokens = new List<RefreshToken>(),
+            CreatedRoadmaps = new List<Domain.Entities.Roadmap>(),
+            PrivateAccesses = new List<PrivateAccess>(),
+            RecentlyVisited = new LinkedList<Guid>(),
+            Stared = new HashSet<Guid>()
         };
 
         var refreshToken = new RefreshToken
@@ -145,7 +150,7 @@ public class UserService : IUserService
         var userIdFromToken = Guid.Parse(principal.FindFirst("UserId")!.Value);
 
         if (!await _repository.CheckIfIdExists(userIdFromToken))
-            throw new NotFound("User doe snot exist");
+            throw new NotFound("User does not exist");
         
         var user = await _repository.GetById(userIdFromToken);
         
