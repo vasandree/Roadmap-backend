@@ -66,6 +66,31 @@ namespace Roadmap.Infrastructure.Migrations
                     b.ToTable("PrivateAccesses");
                 });
 
+            modelBuilder.Entity("Roadmap.Domain.Entities.Progress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoadmapId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<JsonDocument>("UsersProgress")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoadmapId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Progresses");
+                });
+
             modelBuilder.Entity("Roadmap.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -183,6 +208,25 @@ namespace Roadmap.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Roadmap.Domain.Entities.Progress", b =>
+                {
+                    b.HasOne("Roadmap.Domain.Entities.Roadmap", "Roadmap")
+                        .WithMany("Progresses")
+                        .HasForeignKey("RoadmapId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Roadmap.Domain.Entities.User", "User")
+                        .WithMany("Progresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Roadmap");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Roadmap.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("Roadmap.Domain.Entities.User", "User")
@@ -208,6 +252,8 @@ namespace Roadmap.Infrastructure.Migrations
             modelBuilder.Entity("Roadmap.Domain.Entities.Roadmap", b =>
                 {
                     b.Navigation("PrivateAccesses");
+
+                    b.Navigation("Progresses");
                 });
 
             modelBuilder.Entity("Roadmap.Domain.Entities.User", b =>
@@ -215,6 +261,8 @@ namespace Roadmap.Infrastructure.Migrations
                     b.Navigation("CreatedRoadmaps");
 
                     b.Navigation("PrivateAccesses");
+
+                    b.Navigation("Progresses");
 
                     b.Navigation("RefreshTokens");
                 });

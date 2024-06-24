@@ -7,31 +7,22 @@ namespace Roadmap.Domain.Entities;
 
 public class Roadmap : GenericEntity
 {
-    
-    [Required] 
-    [ForeignKey("User")] 
-    public Guid UserId { get; set; }
-    
-    [Required]
-    public string Name { get; set; }
-    
-    [Required]
-    public string Description { get; set; }
-    
-    [Required]
-    public JsonDocument? Content { get; set; }
-    
-    [Required]
-    public Status Status { get; set; }
-    
-    [Required]
-    public int StarsCount { get; set; }
-    
-    [Required]
-    public int TopicsCount { get; set; }
-    
-    [Required]
-    public User User { get; set; }
-    
+    [Required] [ForeignKey("User")] public Guid UserId { get; set; }
+
+    [Required] public string Name { get; set; }
+
+    [Required] public string Description { get; set; }
+
+    [Required] public JsonDocument? Content { get; set; }
+
+    [Required] public Status Status { get; set; }
+
+    [Required] public int StarsCount { get; set; }
+
+    [Required] public int TopicsCount { get; set; }
+
+    [Required] public User User { get; set; }
+
     public IEnumerable<PrivateAccess>? PrivateAccesses { get; set; }
+    public IEnumerable<Progress>? Progresses { get; set; }
 }

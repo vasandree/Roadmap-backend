@@ -16,6 +16,7 @@ public class User : GenericEntity
     public IEnumerable<RefreshToken>? RefreshTokens { get; set; }
     public IEnumerable<Roadmap>? CreatedRoadmaps { get; set; }
     public IEnumerable<PrivateAccess>? PrivateAccesses { get; set; }
+    public IEnumerable<Progress>? Progresses { get; set; }
     
     public LinkedList<Guid>? RecentlyVisited { get; set; }
     public HashSet<Guid>? Stared { get; set; }

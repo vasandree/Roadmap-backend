@@ -4,10 +4,12 @@ using Common.Exceptions;
 using Roadmap.Application.Dtos.Requests;
 using Roadmap.Application.Dtos.Responses;
 using Roadmap.Application.Dtos.Responses.Paged;
+using Roadmap.Application.Helpers;
 using Roadmap.Application.Interfaces.Repositories;
 using Roadmap.Application.Interfaces.Services;
 using Roadmap.Domain.Entities;
 using Roadmap.Domain.Enums;
+using Progress = Roadmap.Domain.Entities.Progress;
 
 namespace Roadmap.Application.Services;
 
@@ -15,17 +17,21 @@ public class RoadmapService : IRoadmapService
 {
     private readonly IMapper _mapper;
     private readonly IUserRepository _repository;
+    private readonly ProgressHelper _progressHelper;
     private readonly IRoadmapRepository _roadmapRepository;
+    private readonly IProgressRepository _progressRepository;
     private readonly IPrivateAccessRepository _accessRepository;
 
 
     public RoadmapService(IRoadmapRepository roadmapRepository, IMapper mapper,
-        IPrivateAccessRepository accessRepository, IUserRepository repository)
+        IPrivateAccessRepository accessRepository, IUserRepository repository, IProgressRepository progressRepository, ProgressHelper progressHelper)
     {
         _roadmapRepository = roadmapRepository;
         _mapper = mapper;
         _accessRepository = accessRepository;
         _repository = repository;
+        _progressRepository = progressRepository;
+        _progressHelper = progressHelper;
     }
 
 
@@ -55,6 +61,9 @@ public class RoadmapService : IRoadmapService
                 dto.IsStared = true;
 
             await AddRecentlyVisited(user, roadmapId);
+            
+            if(!await _progressRepository.CheckIfExists(user.Id, roadmapId))
+                await CreateProgress(user, roadmap);
 
             return dto;
         }
@@ -67,6 +76,36 @@ public class RoadmapService : IRoadmapService
         throw new Forbidden($"User does not have access to roadmap with id={roadmapId}");
     }
 
+    private async Task CreateProgress(User user, Domain.Entities.Roadmap roadmap)
+    {
+        if (roadmap.Content != null)
+        {
+            var topicsIds = _progressHelper.GetTopics(roadmap.Content);
+
+            await _progressRepository.CreateAsync(new Progress
+            {
+                Id = Guid.NewGuid(),
+                RoadmapId = roadmap.Id,
+                UserId = user.Id,
+                UsersProgress = CreateUsersProgressJson(topicsIds),
+                User = user,
+                Roadmap = roadmap
+            });
+        }
+    }
+
+    private JsonDocument CreateUsersProgressJson(List<Guid> topicIds)
+    {
+        var progressList = topicIds.Select(id => new
+        {
+            Id = id,
+            Status = ProgressStatus.Pending.ToString()
+        }).ToList();
+
+        var jsonString = JsonSerializer.Serialize(progressList);
+        var jsonDocument = JsonDocument.Parse(jsonString);
+        return jsonDocument;
+    }
 
     public async Task CreateRoadMap(RoadmapRequestDto roadmapRequestDto, Guid userId)
     {
@@ -136,8 +175,8 @@ public class RoadmapService : IRoadmapService
         {
             if (roadmap.Content != null)
             {
-                var oldTopicsIds = GetNonEdges(roadmap.Content);
-                var newTopicIds = GetNonEdges(jsonContent);
+                var oldTopicsIds = _progressHelper.GetTopics(roadmap.Content);
+                var newTopicIds = _progressHelper.GetTopics(jsonContent);
 
                 //todo: progress delete
 
@@ -163,6 +202,8 @@ public class RoadmapService : IRoadmapService
 
         if (roadmap.UserId != user.Id)
             throw new Forbidden($"User is not a creator of roadmap with id={roadmapId}");
+
+        //todo: delete from recent, delete from stared
 
         await _roadmapRepository.DeleteAsync(roadmap);
     }
@@ -263,15 +304,12 @@ public class RoadmapService : IRoadmapService
 
         if (user.Stared != null && user.Stared.Contains(roadmapId))
         {
+            roadmap.StarsCount--;
             user.Stared.Remove(roadmapId);
         }
         else if (user.Stared != null)
         {
-            user.Stared.Add(roadmapId);
-        }
-        else
-        {
-            user.Stared = new HashSet<Guid>();
+            roadmap.StarsCount++;
             user.Stared.Add(roadmapId);
         }
 
@@ -339,15 +377,5 @@ public class RoadmapService : IRoadmapService
 
         await _repository.UpdateAsync(user);
     }
-
-    private List<Guid> GetNonEdges(JsonDocument jsonDocument)
-    {
-        var jsonElements = jsonDocument.RootElement.EnumerateArray();
-
-        var nonEdgeNodes = jsonElements
-            .Where(element => element.TryGetProperty("shape", out var shape) && shape.GetString() != "edge")
-            .ToList();
-
-        return nonEdgeNodes.Any() ? nonEdgeNodes.Select(element => Guid.Parse(element.GetProperty("id").GetString())).ToList() : new List<Guid>();
-    }
+    
 }
