@@ -173,13 +173,19 @@ public class RoadmapService : IRoadmapService
 
         if (jsonContent != roadmap.Content)
         {
-            if (roadmap.Content != null)
+            
+            if (roadmap.Content != null) 
             {
+                //todo: compare topics content
+                
                 var oldTopicsIds = _progressHelper.GetTopics(roadmap.Content);
                 var newTopicIds = _progressHelper.GetTopics(jsonContent);
 
-                //todo: progress delete
-
+                var deletedTopicIds = oldTopicsIds.Except(newTopicIds).ToList();
+                var addedTopicIds = newTopicIds.Except(oldTopicsIds).ToList();
+                
+                await _progressHelper.ChangeProgress(userId, roadmapId, deletedTopicIds, addedTopicIds);
+                
                 roadmap.TopicsCount = newTopicIds.Count;
             }
 
