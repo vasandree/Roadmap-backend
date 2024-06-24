@@ -20,6 +20,8 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<PrivateAccess> PrivateAccesses { get; set; }
     
+    public DbSet<Progress> Progresses { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -52,6 +54,20 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<PrivateAccess>()
             .HasOne(pa => pa.User)
             .WithMany(r => r.PrivateAccesses)
+            .HasForeignKey(pa => pa.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<Progress>()
+            .HasOne(pa => pa.Roadmap)
+            .WithMany(r => r.Progresses)
+            .HasForeignKey(pa => pa.RoadmapId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<Progress>()
+            .HasOne(pa => pa.User)
+            .WithMany(r => r.Progresses)
             .HasForeignKey(pa => pa.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);

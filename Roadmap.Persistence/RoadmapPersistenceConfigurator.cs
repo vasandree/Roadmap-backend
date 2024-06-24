@@ -16,6 +16,7 @@ public static class RoadmapPersistenceConfigurator
         builder.Services.AddTransient<IExpiredToken, ExpiredTokenRepository>();
         builder.Services.AddTransient<IRefreshToken, RefreshTokenRepository>();
         builder.Services.AddTransient<IRoadmapRepository, RoadmapRepository>();
+        builder.Services.AddTransient<IProgressRepository, ProgressRepository>();
         builder.Services.AddTransient<IPrivateAccessRepository, PrivateAccessRepository>();
     }
 }

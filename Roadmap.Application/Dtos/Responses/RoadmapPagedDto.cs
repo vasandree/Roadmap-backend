@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 using Roadmap.Domain.Enums;
 
 namespace Roadmap.Application.Dtos.Responses;
@@ -28,4 +29,7 @@ public class RoadmapPagedDto
 
     [Required]
     public bool IsStared { get; set; }
+    
+    [Required]
+    public JsonDocument Progress { get; set; }
 }
