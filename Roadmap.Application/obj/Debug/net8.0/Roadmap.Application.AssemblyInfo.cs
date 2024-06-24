@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Roadmap.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8db096b83fa4d143e8009f2feac99467824df34d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4912a714ad5435c97c443975b256f03182d77965")]
 [assembly: System.Reflection.AssemblyProductAttribute("Roadmap.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Roadmap.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -37,7 +37,7 @@ public class UserService : IUserService
             throw new Conflict("User with this email already exists");
 
         if (await _repository.CheckIfUsernameExists(registerDto.Username))
-            throw new Conflict("User with this usrename already exists");
+            throw new Conflict("User with this username already exists");
 
         var passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(registerDto.Password, 11);
 
@@ -114,6 +114,25 @@ public class UserService : IUserService
         var userDto = _mapper.Map<UserDto>(user);
 
         return userDto;
+    }
+
+    public async Task EditProfile(Guid userId, EditProfileDto editProfileDto)
+    {
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound("User does not exist");
+
+        var user = await _repository.GetById(userId);
+        
+        if (await _repository.CheckIfEmailExists(editProfileDto.Email))
+            throw new Conflict("User with this email already exists");
+
+        if (await _repository.CheckIfUsernameExists(editProfileDto.Username))
+            throw new Conflict("User with this username already exists");
+
+        user.Email = editProfileDto.Email;
+        user.Username = editProfileDto.Username;
+
+        await _repository.UpdateAsync(user);
     }
 
     public async Task Logout(Guid userId, string refreshToken, string accessToken)

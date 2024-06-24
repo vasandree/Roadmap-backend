@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Roadmap.Application.Dtos.Requests;
 using Roadmap.Application.Dtos.Responses;
@@ -42,7 +41,7 @@ public class UserController : ControllerBase
         return Ok();
     }
 
-    [HttpPut, Authorize(Policy = "AuthorizationPolicy")]
+    [HttpPut, Authorize(Policy = "AuthorizationPolicy"), Route("change_password")]
     public async Task<IActionResult> ChangePassword(EditPasswordDto editPasswordDto)
     {
         await _userService.ChangePassword(Guid.Parse(User.FindFirst("UserId")!.Value!), editPasswordDto);
