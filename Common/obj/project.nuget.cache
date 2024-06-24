@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TEyiv6p4uC6OSJsDTUK8xmWM6Z3nxWQ2RkMhg9VcuvlbRggzid6haOJrSVwMjpVUjBi/vb5gKziU/68PSRzEbQ==",
+  "dgSpecHash": "nH3Lx0lBHaU1z/GWOOh2ZXdGZZHdcY6gIsA7SKuJWjFpu6pxtn68+YFeMMRum6zj7hadNkbU8WIwHFPgHIi25A==",
   "success": true,
-  "projectFilePath": "/Users/andreivasilev/Desktop/backend/Rodamap/Common/Common.csproj",
+  "projectFilePath": "/Users/andreivasilev/Desktop/backend/Common/Common.csproj",
   "expectedPackageFiles": [
     "/Users/andreivasilev/.nuget/packages/microsoft.entityframeworkcore/8.0.6/microsoft.entityframeworkcore.8.0.6.nupkg.sha512",
     "/Users/andreivasilev/.nuget/packages/microsoft.entityframeworkcore.abstractions/8.0.6/microsoft.entityframeworkcore.abstractions.8.0.6.nupkg.sha512",

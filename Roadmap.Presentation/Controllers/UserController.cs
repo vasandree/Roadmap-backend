@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Roadmap.Application.Dtos.Requests;
 using Roadmap.Application.Dtos.Responses;
@@ -32,6 +33,20 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetUserProfile()
     {
         return Ok(await _userService.GetProfile(Guid.Parse(User.FindFirst("UserId")!.Value!)));
+    }
+
+    [HttpPut, Authorize(Policy = "AuthorizationPolicy")]
+    public async Task<IActionResult> EditProfile(EditProfileDto editProfileDto)
+    {
+        await _userService.EditProfile(Guid.Parse(User.FindFirst("UserId")!.Value!), editProfileDto);
+        return Ok();
+    }
+
+    [HttpPut, Authorize(Policy = "AuthorizationPolicy")]
+    public async Task<IActionResult> ChangePassword(EditPasswordDto editPasswordDto)
+    {
+        await _userService.ChangePassword(Guid.Parse(User.FindFirst("UserId")!.Value!), editPasswordDto);
+        return Ok();
     }
 
     [HttpPost, Authorize(Policy = "AuthorizationPolicy"), Route("logout")]

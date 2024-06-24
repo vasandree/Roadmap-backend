@@ -36,7 +36,7 @@ public class UserService : IUserService
             throw new Conflict("User with this email already exists");
 
         if (await _repository.CheckIfUsernameExists(registerDto.Username))
-            throw new Conflict("User with this usrename already exists");
+            throw new Conflict("User with this username already exists");
 
         var passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(registerDto.Password, 11);
 
@@ -75,7 +75,6 @@ public class UserService : IUserService
 
         else if (await _repository.CheckIfUsernameExists(loginDto.Username))
             user = await _repository.GetByUsername(loginDto.Username);
-        
         else
             throw new NotFound("User with this email or username does not exist");
 
@@ -109,6 +108,25 @@ public class UserService : IUserService
         var userDto = _mapper.Map<UserDto>(user);
 
         return userDto;
+    }
+
+    public async Task EditProfile(Guid userId, EditProfileDto editProfileDto)
+    {
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound("User does not exist");
+
+        var user = await _repository.GetById(userId);
+
+        if (await _repository.CheckIfEmailExists(editProfileDto.Email))
+            throw new Conflict("User with this email already exists");
+
+        if (await _repository.CheckIfUsernameExists(editProfileDto.Username))
+            throw new Conflict("User with this username already exists");
+        
+        user.Username = editProfileDto.Username;
+        user.Email = editProfileDto.Email;
+
+        await _repository.UpdateAsync(user);
     }
 
     public async Task Logout(Guid userId, string refreshToken, string accessToken)
@@ -170,5 +188,20 @@ public class UserService : IUserService
             AccessToken = _jwt.GenerateTokenString(user.UserId, user.Email, user.Username),
             RefreshToken = refreshToken.TokenString
         };
+    }
+
+    public async Task ChangePassword(Guid userId, EditPasswordDto editPasswordDto)
+    {
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound("User does not exist");
+
+        var user = await _repository.GetById(userId);
+        
+        if (!BCrypt.Net.BCrypt.EnhancedVerify(editPasswordDto.OldPassword, user.Password))
+            throw new BadRequest("Wrong password");
+        
+        user.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(editPasswordDto.NewPassword, 11);
+
+        await _repository.UpdateAsync(user);
     }
 }

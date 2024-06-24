@@ -690,11 +690,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Rodamap/Common/Common.csproj",
+      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Common/Common.csproj",
       "projectName": "Common",
-      "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Common/Common.csproj",
+      "projectPath": "/Users/andreivasilev/Desktop/backend/Common/Common.csproj",
       "packagesPath": "/Users/andreivasilev/.nuget/packages/",
-      "outputPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Common/obj/",
+      "outputPath": "/Users/andreivasilev/Desktop/backend/Common/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/andreivasilev/.nuget/NuGet/NuGet.Config"

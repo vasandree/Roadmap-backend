@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/Roadmap.Domain.csproj",
+      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Roadmap.Domain/Roadmap.Domain.csproj",
       "projectName": "Roadmap.Domain",
-      "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/Roadmap.Domain.csproj",
+      "projectPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Domain/Roadmap.Domain.csproj",
       "packagesPath": "/Users/andreivasilev/.nuget/packages/",
-      "outputPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/obj/",
+      "outputPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Domain/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/andreivasilev/.nuget/NuGet/NuGet.Config"

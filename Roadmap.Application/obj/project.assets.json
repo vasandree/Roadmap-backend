@@ -7851,11 +7851,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Application/Roadmap.Application.csproj",
+      "projectUniqueName": "/Users/andreivasilev/Desktop/backend/Roadmap.Application/Roadmap.Application.csproj",
       "projectName": "Roadmap.Application",
-      "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Application/Roadmap.Application.csproj",
+      "projectPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Application/Roadmap.Application.csproj",
       "packagesPath": "/Users/andreivasilev/.nuget/packages/",
-      "outputPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Application/obj/",
+      "outputPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Application/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/andreivasilev/.nuget/NuGet/NuGet.Config"
@@ -7871,14 +7871,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/andreivasilev/Desktop/backend/Rodamap/Common/Common.csproj": {
-              "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Common/Common.csproj"
+            "/Users/andreivasilev/Desktop/backend/Common/Common.csproj": {
+              "projectPath": "/Users/andreivasilev/Desktop/backend/Common/Common.csproj"
             },
-            "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/Roadmap.Domain.csproj": {
-              "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Domain/Roadmap.Domain.csproj"
+            "/Users/andreivasilev/Desktop/backend/Roadmap.Domain/Roadmap.Domain.csproj": {
+              "projectPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Domain/Roadmap.Domain.csproj"
             },
-            "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj": {
-              "projectPath": "/Users/andreivasilev/Desktop/backend/Rodamap/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj"
+            "/Users/andreivasilev/Desktop/backend/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj": {
+              "projectPath": "/Users/andreivasilev/Desktop/backend/Roadmap.Infrastructure/Roadmap.Infrastructure.csproj"
             }
           }
         }
