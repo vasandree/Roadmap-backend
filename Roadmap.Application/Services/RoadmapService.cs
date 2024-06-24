@@ -24,7 +24,8 @@ public class RoadmapService : IRoadmapService
 
 
     public RoadmapService(IRoadmapRepository roadmapRepository, IMapper mapper,
-        IPrivateAccessRepository accessRepository, IUserRepository repository, IProgressRepository progressRepository, ProgressHelper progressHelper)
+        IPrivateAccessRepository accessRepository, IUserRepository repository, IProgressRepository progressRepository,
+        ProgressHelper progressHelper)
     {
         _roadmapRepository = roadmapRepository;
         _mapper = mapper;
@@ -61,9 +62,13 @@ public class RoadmapService : IRoadmapService
                 dto.IsStared = true;
 
             await AddRecentlyVisited(user, roadmapId);
-            
-            if(!await _progressRepository.CheckIfExists(user.Id, roadmapId))
+
+            if (!await _progressRepository.CheckIfExists(user.Id, roadmapId))
                 await CreateProgress(user, roadmap);
+
+            var progress = await _progressRepository.GetByUserAndRoadmap(user.Id, roadmap.Id);
+
+            dto.Progress = progress.UsersProgress;
 
             return dto;
         }
@@ -173,23 +178,19 @@ public class RoadmapService : IRoadmapService
 
         if (jsonContent != roadmap.Content)
         {
-            
-            if (roadmap.Content != null) 
+            if (roadmap.Content != null)
             {
-                //todo: compare topics content
-
-                
                 var oldTopicsIds = _progressHelper.GetTopicIds(roadmap.Content);
                 var newTopicIds = _progressHelper.GetTopicIds(jsonContent);
                 var commonTopicIds = oldTopicsIds.Intersect(newTopicIds).ToList();
-                
+
                 var modifiedIds = _progressHelper.GetModifiedTopics(commonTopicIds, roadmap.Content, jsonContent);
-                
+
                 var deletedTopicIds = oldTopicsIds.Except(newTopicIds).ToList();
                 var addedTopicIds = newTopicIds.Except(oldTopicsIds).ToList();
-                
+
                 await _progressHelper.ChangeProgress(userId, roadmapId, deletedTopicIds, addedTopicIds, modifiedIds);
-                
+
                 roadmap.TopicsCount = newTopicIds.Count;
             }
 
@@ -212,7 +213,7 @@ public class RoadmapService : IRoadmapService
 
         if (roadmap.UserId != user.Id)
             throw new Forbidden($"User is not a creator of roadmap with id={roadmapId}");
-        
+
         await _roadmapRepository.DeleteAsync(roadmap);
     }
 
@@ -241,12 +242,24 @@ public class RoadmapService : IRoadmapService
 
         var user = await _repository.GetById(userId);
 
-        var roadmapIds = user.Stared?.ToList();
+        var roadmapIds = user.Stared?.ToHashSet();
+
+        var existingRoadmaps = new HashSet<Guid>();
 
         if (roadmapIds == null || !roadmapIds.Any())
             return new RoadmapsPagedDto();
 
-        var roadmaps = await _roadmapRepository.GetRoadmapsByIds(roadmapIds);
+        foreach (var id in roadmapIds)
+        {
+            if (await _roadmapRepository.CheckIfIdExists(id))
+                existingRoadmaps.Add(id);
+        }
+
+        user.Stared = existingRoadmaps;
+        await _repository.UpdateAsync(user);
+        
+        
+        var roadmaps = await _roadmapRepository.GetRoadmapsByIds(existingRoadmaps.ToList());
 
 
         return await GetPagedRoadmaps(roadmaps, page, userId);
@@ -262,7 +275,7 @@ public class RoadmapService : IRoadmapService
         return await GetPagedRoadmaps(roadmaps, page, userId);
     }
 
-    public async Task<List<RoadmapPagedDto>> GetRecentRoadmaps(Guid userId)
+    public async Task<RoadmapsPagedDto> GetRecentRoadmaps(Guid userId)
     {
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound($"User with id={userId} not found");
@@ -271,25 +284,27 @@ public class RoadmapService : IRoadmapService
         var roadmapsIds = user.RecentlyVisited;
 
         if (roadmapsIds == null || !roadmapsIds.Any())
-            return new List<RoadmapPagedDto>();
+            return new RoadmapsPagedDto();
 
-        var roadmapsTasks = roadmapsIds.Select(async x =>
+        var existingRoadmaps = new List<Guid>();
+
+        foreach (var id in roadmapsIds)
         {
-            var roadmap = await _roadmapRepository.GetById(x);
-            var roadmapDto = _mapper.Map<RoadmapPagedDto>(roadmap);
+            if (await _roadmapRepository.CheckIfIdExists(id))
+                existingRoadmaps.Add(id);
+        }
 
-            if (user.Stared != null && user.Stared.Contains(roadmap.Id))
-            {
-                roadmapDto.IsStared = true;
-            }
+        
+        var existingRoadmapsLinkedList = new LinkedList<Guid>(existingRoadmaps);
+        user.RecentlyVisited = existingRoadmapsLinkedList;
+        await _repository.UpdateAsync(user);
+        
+        var roadmaps = await _roadmapRepository.GetRoadmapsByIds(existingRoadmaps);
 
-            return roadmapDto;
-        });
-
-        var roadmaps = await Task.WhenAll(roadmapsTasks);
-
-        return roadmaps.ToList();
+        return await GetPagedRoadmaps(roadmaps, 1, user.Id);
     }
+
+
 
 
     public async Task StarRoadmap(Guid userId, Guid roadmapId)
@@ -352,6 +367,13 @@ public class RoadmapService : IRoadmapService
 
                 if (user.Stared != null && user.Stared.Contains(roadmap.Id))
                     roadmapDto.IsStared = true;
+
+                if (await _progressRepository.CheckIfExists(user.Id, roadmap.Id))
+                {
+                    var progress = await _progressRepository.GetByUserAndRoadmap(user.Id, roadmap.Id);
+
+                    roadmapDto.Progress = progress.UsersProgress;
+                }
             }
 
             dto.Add(roadmapDto);
@@ -366,10 +388,7 @@ public class RoadmapService : IRoadmapService
 
     private async Task AddRecentlyVisited(User user, Guid roadmapId)
     {
-        if (user.RecentlyVisited == null)
-        {
-            user.RecentlyVisited = new LinkedList<Guid>();
-        }
+        user.RecentlyVisited ??= new LinkedList<Guid>();
 
         if (user.RecentlyVisited.Contains(roadmapId))
         {
@@ -385,5 +404,4 @@ public class RoadmapService : IRoadmapService
 
         await _repository.UpdateAsync(user);
     }
-    
 }
