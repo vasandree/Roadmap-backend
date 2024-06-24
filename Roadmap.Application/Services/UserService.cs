@@ -50,8 +50,8 @@ public class UserService : IUserService
             RefreshTokens = new List<RefreshToken>(),
             CreatedRoadmaps = new List<Domain.Entities.Roadmap>(),
             PrivateAccesses = new List<PrivateAccess>(),
-            RecentlyVisited = new LinkedList<Guid>(),
-            Stared = new HashSet<Guid>()
+            RecentlyVisited = new List<Guid>(),
+            Stared = new List<Guid>()
         };
 
         var refreshToken = new RefreshToken

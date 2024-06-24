@@ -168,10 +168,10 @@ namespace Roadmap.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<LinkedList<Guid>>("RecentlyVisited")
+                    b.Property<List<Guid>>("RecentlyVisited")
                         .HasColumnType("uuid[]");
 
-                    b.Property<HashSet<Guid>>("Stared")
+                    b.Property<List<Guid>>("Stared")
                         .HasColumnType("uuid[]");
 
                     b.Property<string>("Username")

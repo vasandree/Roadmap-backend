@@ -244,7 +244,7 @@ public class RoadmapService : IRoadmapService
 
         var roadmapIds = user.Stared?.ToHashSet();
 
-        var existingRoadmaps = new HashSet<Guid>();
+        var existingRoadmaps = new List<Guid>();
 
         if (roadmapIds == null || !roadmapIds.Any())
             return new RoadmapsPagedDto();
@@ -294,9 +294,7 @@ public class RoadmapService : IRoadmapService
                 existingRoadmaps.Add(id);
         }
 
-        
-        var existingRoadmapsLinkedList = new LinkedList<Guid>(existingRoadmaps);
-        user.RecentlyVisited = existingRoadmapsLinkedList;
+        user.RecentlyVisited = existingRoadmaps;
         await _repository.UpdateAsync(user);
         
         var roadmaps = await _roadmapRepository.GetRoadmapsByIds(existingRoadmaps);
@@ -441,7 +439,7 @@ public class RoadmapService : IRoadmapService
     {
         if (user.RecentlyVisited == null)
         {
-            user.RecentlyVisited = new LinkedList<Guid>();
+            user.RecentlyVisited = new List<Guid>();
         }
 
         if (user.RecentlyVisited.Contains(roadmapId))
@@ -449,15 +447,16 @@ public class RoadmapService : IRoadmapService
             user.RecentlyVisited.Remove(roadmapId);
         }
 
-        user.RecentlyVisited.AddFirst(roadmapId);
+        user.RecentlyVisited.Insert(0, roadmapId);
 
         if (user.RecentlyVisited.Count > 5)
         {
-            user.RecentlyVisited.RemoveLast();
+            user.RecentlyVisited.RemoveAt(user.RecentlyVisited.Count - 1);
         }
 
         await _repository.UpdateAsync(user);
     }
+
 
     private List<Guid> GetNonEdges(JsonDocument jsonDocument)
     {

@@ -18,6 +18,7 @@ public class User : GenericEntity
     public IEnumerable<PrivateAccess>? PrivateAccesses { get; set; }
     public IEnumerable<Progress>? Progresses { get; set; }
     
-    public LinkedList<Guid>? RecentlyVisited { get; set; }
-    public HashSet<Guid>? Stared { get; set; }
+    public List<Guid>? RecentlyVisited { get; set; }
+    public List<Guid>? Stared { get; set; }
 }
+
