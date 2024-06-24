@@ -47,7 +47,7 @@ public class ProgressService : IProgressService
                 throw new Forbidden("You do not have access to this roadmap");
         }
 
-        var topicIds = _progressHelper.GetTopics(roadmap.Content);
+        var topicIds = _progressHelper.GetTopicIds(roadmap.Content);
 
         if (!topicIds.Contains(topicId))
             throw new NotFound($"Topic with id={topicId} not found in the roadmap");

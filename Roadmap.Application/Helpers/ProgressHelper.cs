@@ -13,7 +13,7 @@ public class ProgressHelper
         _progressRepository = progressRepository;
     }
 
-    public List<Guid> GetTopics(JsonDocument jsonDocument)
+    public List<Guid> GetTopicIds(JsonDocument jsonDocument)
     {
         var jsonElements = jsonDocument.RootElement.EnumerateArray();
 
@@ -26,7 +26,8 @@ public class ProgressHelper
             : new List<Guid>();
     }
 
-    public async Task ChangeProgress(Guid userId, Guid roadmapId, List<Guid> deletedTopicIds, List<Guid> addedTopicIds)
+    public async Task ChangeProgress(Guid userId, Guid roadmapId, List<Guid> deletedTopicIds, List<Guid> addedTopicIds,
+        List<Guid> modifiedIds)
     {
         var progressesToChange = await _progressRepository.Find(x => x.UserId == userId && x.RoadmapId == roadmapId);
         var progresses = progressesToChange.ToList();
@@ -41,7 +42,23 @@ public class ProgressHelper
                 foreach (var item in progressItems)
                 {
                     var itemId = item.GetProperty("Id").GetGuid();
-                    if (!deletedTopicIds.Contains(itemId))
+
+                    if (deletedTopicIds.Contains(itemId))
+                    {
+                        continue;
+                    }
+
+                    if (modifiedIds.Contains(itemId))
+                    {
+                        var modifiedItem = new
+                        {
+                            Id = itemId,
+                            Status = ProgressStatus.ChangedByAuthor.ToString()
+                        };
+                        var jsonString = JsonSerializer.Serialize(modifiedItem);
+                        updatedProgressItems.Add(JsonDocument.Parse(jsonString).RootElement);
+                    }
+                    else
                     {
                         updatedProgressItems.Add(item);
                     }
@@ -66,4 +83,49 @@ public class ProgressHelper
         }
     }
 
+
+    public List<Guid> GetModifiedTopics(List<Guid> commonTopicIds, JsonDocument oldContent, JsonDocument newContent)
+    {
+        var modifiedIds = new List<Guid>();
+
+        foreach (var topicId in commonTopicIds)
+        {
+            var oldTopic = GetTopicDetails(oldContent, topicId);
+            var newTopic = GetTopicDetails(newContent, topicId);
+
+            if (oldTopic != null && newTopic != null)
+            {
+                if (oldTopic.Text != newTopic.Text || oldTopic.Data != newTopic.Data)
+                {
+                    modifiedIds.Add(topicId);
+                }
+            }
+        }
+
+        return modifiedIds;
+    }
+
+    private TopicDetails? GetTopicDetails(JsonDocument jsonDocument, Guid topicId)
+    {
+        var root = jsonDocument.RootElement;
+
+        foreach (var element in root.EnumerateArray())
+        {
+            if (element.GetProperty("id").GetGuid() == topicId)
+            {
+                var text = element.GetProperty("attrs").GetProperty("text").GetProperty("text").GetString();
+                var data = element.GetProperty("data").GetProperty("data").GetString();
+
+                return new TopicDetails { Text = text, Data = data };
+            }
+        }
+
+        return null;
+    }
+
+    private class TopicDetails
+    {
+        public string Text { get; set; }
+        public string Data { get; set; }
+    }
 }

@@ -80,7 +80,7 @@ public class RoadmapService : IRoadmapService
     {
         if (roadmap.Content != null)
         {
-            var topicsIds = _progressHelper.GetTopics(roadmap.Content);
+            var topicsIds = _progressHelper.GetTopicIds(roadmap.Content);
 
             await _progressRepository.CreateAsync(new Progress
             {
@@ -177,14 +177,18 @@ public class RoadmapService : IRoadmapService
             if (roadmap.Content != null) 
             {
                 //todo: compare topics content
-                
-                var oldTopicsIds = _progressHelper.GetTopics(roadmap.Content);
-                var newTopicIds = _progressHelper.GetTopics(jsonContent);
 
+                
+                var oldTopicsIds = _progressHelper.GetTopicIds(roadmap.Content);
+                var newTopicIds = _progressHelper.GetTopicIds(jsonContent);
+                var commonTopicIds = oldTopicsIds.Intersect(newTopicIds).ToList();
+                
+                var modifiedIds = _progressHelper.GetModifiedTopics(commonTopicIds, roadmap.Content, jsonContent);
+                
                 var deletedTopicIds = oldTopicsIds.Except(newTopicIds).ToList();
                 var addedTopicIds = newTopicIds.Except(oldTopicsIds).ToList();
                 
-                await _progressHelper.ChangeProgress(userId, roadmapId, deletedTopicIds, addedTopicIds);
+                await _progressHelper.ChangeProgress(userId, roadmapId, deletedTopicIds, addedTopicIds, modifiedIds);
                 
                 roadmap.TopicsCount = newTopicIds.Count;
             }
@@ -208,9 +212,7 @@ public class RoadmapService : IRoadmapService
 
         if (roadmap.UserId != user.Id)
             throw new Forbidden($"User is not a creator of roadmap with id={roadmapId}");
-
-        //todo: delete from recent, delete from stared
-
+        
         await _roadmapRepository.DeleteAsync(roadmap);
     }
 
