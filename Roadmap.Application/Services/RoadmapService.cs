@@ -327,6 +327,22 @@ public class RoadmapService : IRoadmapService
         return _mapper.Map<RoadmapResponseDto>(newRoadmap);
     }
 
+    public async Task<RoadmapsPagedDto> GetUsersRoadmaps(Guid userId, Guid roadmapUserId, int page)
+    {
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound("User does not exist");
+        
+        if (!await _repository.CheckIfIdExists(roadmapUserId))
+            throw new NotFound("User does not exist");
+
+        var roadmapUser = await _repository.GetById(userId);
+
+        if (roadmapUser.CreatedRoadmaps != null)
+            return await GetPagedRoadmaps(roadmapUser.CreatedRoadmaps.ToList(), page, userId);
+
+        return new RoadmapsPagedDto();
+    }
+
     private async Task<RoadmapsPagedDto> GetPagedRoadmaps(List<Domain.Entities.Roadmap> roadmaps, int page,
         Guid? userId)
     {

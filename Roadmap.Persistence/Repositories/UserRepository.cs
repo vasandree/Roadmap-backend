@@ -13,11 +13,14 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     {
         _context = context;
     }
-
+    
+    
     public new async Task<User> GetById(Guid id)
     {
         return (await _context.Users
             .Include(x=>x.RefreshTokens)
+            .Include(x=>x.PrivateAccesses)
+            .Include(x=>x.CreatedRoadmaps)
             .FirstOrDefaultAsync(x => x.Id == id)!);
     }
 
