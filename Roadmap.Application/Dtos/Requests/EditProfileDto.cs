@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Roadmap.Application.Dtos.Requests;
 
-public class RegisterDto
+public class EditProfileDto
 {
     [Required] 
     [EmailAddress]
@@ -10,9 +10,5 @@ public class RegisterDto
     
     [Required] 
     [MinLength(6)]
-    public string Username { get; set; }
-
-    [Required] 
-    [MinLength(6)]
-    public string Password { get; set; }
+    public string Username { get; set; }   
 }
