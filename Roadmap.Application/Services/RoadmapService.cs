@@ -270,6 +270,7 @@ public class RoadmapService : IRoadmapService
         if (roadmap.UserId == user.Id)
             throw new BadRequest("You can't mark your own roadmap");
 
+        
         if (roadmap.Status != Status.Public)
             throw new BadRequest("Roadmap is not published");
 
@@ -288,6 +289,42 @@ public class RoadmapService : IRoadmapService
         }
 
         await _repository.UpdateAsync(user);
+    }
+
+    public async Task<RoadmapResponseDto> CopyRoadmap(Guid userId, Guid roadmapId)
+    {
+        
+        if (!await _roadmapRepository.CheckIfIdExists(roadmapId))
+            throw new NotFound($"Roadmap with id={roadmapId} not found");
+
+        var roadmap = await _roadmapRepository.GetById(roadmapId);
+
+        if (!await _repository.CheckIfIdExists(userId))
+            throw new NotFound("User does not exist");
+
+        var user = await _repository.GetById(userId);
+        
+        if (roadmap.Status != Status.Public || roadmap.UserId != userId)
+            throw new BadRequest("Roadmap is not published");
+
+        
+        var newRoadmap = new Domain.Entities.Roadmap
+        {
+            Id = Guid.NewGuid(),
+            UserId = roadmap.UserId,
+            Name = $"{roadmap.Name}(копия)",
+            Description = roadmap.Description,
+            Content = null,
+            Status = Status.Private,
+            StarsCount = 0,
+            TopicsCount = 0,
+            User = user,
+            PrivateAccesses = new List<PrivateAccess>()
+        };
+
+        await _roadmapRepository.CreateAsync(newRoadmap);
+        
+        return _mapper.Map<RoadmapResponseDto>(newRoadmap);
     }
 
     private async Task<RoadmapsPagedDto> GetPagedRoadmaps(List<Domain.Entities.Roadmap> roadmaps, int page,

@@ -94,4 +94,11 @@ public class RoadmapController : ControllerBase
         await _roadmapService.StarRoadmap(Guid.Parse(User.FindFirst("UserId")!.Value!), id);
         return Ok();
     }
+
+    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/copy")]
+    public async Task<IActionResult> CopyRoadmap(Guid id)
+    {
+        await _roadmapService.CopyRoadmap(Guid.Parse(User.FindFirst("UserId")!.Value!), id);
+        return Ok();
+    }
 }
