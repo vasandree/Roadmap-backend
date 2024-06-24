@@ -197,11 +197,23 @@ public class RoadmapService : IRoadmapService
         if (roadmapIds == null || !roadmapIds.Any())
             return new RoadmapsPagedDto();
 
-        var roadmaps = await _roadmapRepository.GetRoadmapsByIds(roadmapIds);
+        var existingRoadmapIds = new List<Guid>();
+        foreach (var roadmapId in roadmapIds)
+        {
+            if (await _roadmapRepository.CheckIfIdExists(roadmapId))
+            {
+                existingRoadmapIds.Add(roadmapId);
+            }
+        }
 
+        if (!existingRoadmapIds.Any())
+            return new RoadmapsPagedDto();
+
+        var roadmaps = await _roadmapRepository.GetRoadmapsByIds(existingRoadmapIds);
 
         return await GetPagedRoadmaps(roadmaps, page, userId);
     }
+
 
     public async Task<RoadmapsPagedDto> GetPrivateRoadmaps(Guid userId, int page)
     {
@@ -213,33 +225,33 @@ public class RoadmapService : IRoadmapService
         return await GetPagedRoadmaps(roadmaps, page, userId);
     }
 
-    public async Task<List<RoadmapPagedDto>> GetRecentRoadmaps(Guid userId)
+    public async Task<RoadmapsPagedDto> GetRecentRoadmaps(Guid userId)
     {
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound($"User with id={userId} not found");
 
         var user = await _repository.GetById(userId);
-        var roadmapsIds = user.RecentlyVisited;
 
-        if (roadmapsIds == null || !roadmapsIds.Any())
-            return new List<RoadmapPagedDto>();
+        var roadmapIds = user.RecentlyVisited?.ToList();
 
-        var roadmapsTasks = roadmapsIds.Select(async x =>
+        if (roadmapIds == null || !roadmapIds.Any())
+            return new RoadmapsPagedDto();
+
+        var existingRoadmapIds = new List<Guid>();
+        foreach (var roadmapId in roadmapIds)
         {
-            var roadmap = await _roadmapRepository.GetById(x);
-            var roadmapDto = _mapper.Map<RoadmapPagedDto>(roadmap);
-
-            if (user.Stared != null && user.Stared.Contains(roadmap.Id))
+            if (await _roadmapRepository.CheckIfIdExists(roadmapId))
             {
-                roadmapDto.IsStared = true;
+                existingRoadmapIds.Add(roadmapId);
             }
+        }
 
-            return roadmapDto;
-        });
+        if (!existingRoadmapIds.Any())
+            return new RoadmapsPagedDto();
 
-        var roadmaps = await Task.WhenAll(roadmapsTasks);
+        var roadmaps = await _roadmapRepository.GetRoadmapsByIds(existingRoadmapIds);
 
-        return roadmaps.ToList();
+        return await GetPagedRoadmaps(roadmaps, 1, userId);
     }
 
 
@@ -348,6 +360,8 @@ public class RoadmapService : IRoadmapService
             .Where(element => element.TryGetProperty("shape", out var shape) && shape.GetString() != "edge")
             .ToList();
 
-        return nonEdgeNodes.Any() ? nonEdgeNodes.Select(element => Guid.Parse(element.GetProperty("id").GetString())).ToList() : new List<Guid>();
+        return nonEdgeNodes.Any()
+            ? nonEdgeNodes.Select(element => Guid.Parse(element.GetProperty("id").GetString())).ToList()
+            : new List<Guid>();
     }
 }
