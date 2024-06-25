@@ -4,7 +4,7 @@ using Roadmap.Application.Interfaces.Services;
 
 namespace Roadmap.Controllers;
 
-[ApiController, Route("api")]
+[ApiController, Route("api/users")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -16,15 +16,15 @@ public class UsersController : ControllerBase
         _roadmapService = roadmapService;
     }
 
-    [HttpGet, Authorize(Policy = "AuthorizationPolicy"), Route("users"), AllowAnonymous]
+    [HttpGet, Authorize(Policy = "AuthorizationPolicy"),  AllowAnonymous]
     public async Task<IActionResult> GetUsers([FromQuery] string username)
     {
-        return Ok(await _userService.GetUsers(Guid.Parse(User.FindFirst("UserId")!.Value!),username));
+        return Ok(await _userService.GetUsers(Guid.Parse(User.FindFirst("UserId")!.Value!), username));
     }
 
-    [HttpGet, Authorize(Policy = "AuthorizationPolicy"), Route("users/{userId}/roadmaps"), AllowAnonymous]
+    [HttpGet, Authorize(Policy = "AuthorizationPolicy"), Route("{userId}/roadmaps"), AllowAnonymous]
     public async Task<IActionResult> GetUsersRoadmaps(Guid userId, int page = 1)
     {
-        return Ok(await _roadmapService.GetUsersRoadmaps(Guid.Parse(User.FindFirst("UserId")!.Value!), userId,page));
+        return Ok(await _roadmapService.GetUsersRoadmaps(Guid.Parse(User.FindFirst("UserId")!.Value!), userId, page));
     }
 }

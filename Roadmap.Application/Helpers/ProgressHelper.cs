@@ -33,7 +33,7 @@ public class ProgressHelper
     public async Task ChangeProgress(Guid userId, Guid roadmapId, List<Guid> deletedTopicIds, List<Guid> addedTopicIds,
         List<Guid> modifiedIds)
     {
-        var progressesToChange = await _progressRepository.Find(x => x.UserId == userId && x.RoadmapId == roadmapId);
+        var progressesToChange = await _progressRepository.Find(x => x.RoadmapId == roadmapId);
         var progresses = progressesToChange.ToList();
 
         foreach (var progress in progresses)
@@ -139,4 +139,32 @@ public class ProgressHelper
         public string Text { get; set; }
         public string Data { get; set; }
     }
+
+    public int CountClosed(JsonDocument? progressUsersProgress)
+    {
+        if (progressUsersProgress == null)
+        {
+            return 0;
+        }
+
+        var root = progressUsersProgress.RootElement;
+
+        if (root.ValueKind == JsonValueKind.Array)
+        {
+            int closedCount = 0;
+
+            foreach (var element in root.EnumerateArray())
+            {
+                if (element.TryGetProperty("Status", out JsonElement statusElement) && statusElement.GetString() == "Closed")
+                {
+                    closedCount++;
+                }
+            }
+
+            return closedCount;
+        }
+
+        return 0;
+    }
+
 }

@@ -136,7 +136,10 @@ public class RoadmapAccessService : IRoadmapAccessService
         }
 
         if (!roadmap.PrivateAccesses.Any())
+        {
             roadmap.Status = Status.Private;
+            await _roadmapRepository.UpdateAsync(roadmap);
+        }
     }
 
     public async Task<List<UserDto>> GetPrivateUsers(Guid userId, Guid roadmapId, string? name)

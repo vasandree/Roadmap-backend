@@ -29,6 +29,9 @@ public class RoadmapResponseDto
     public int TopicsCount { get; set; }
     
     [Required]
+    public int TopicsClosed { get; set; }
+    
+    [Required]
     public bool IsStared { get; set; }
     
     public JsonDocument? Progress { get; set; }

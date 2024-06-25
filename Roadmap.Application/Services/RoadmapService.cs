@@ -384,7 +384,7 @@ public class RoadmapService : IRoadmapService
         if (!await _repository.CheckIfIdExists(roadmapUserId))
             throw new NotFound("User does not exist");
 
-        var roadmapUser = await _repository.GetById(userId);
+        var roadmapUser = await _repository.GetById(roadmapUserId);
 
         if (roadmapUser.CreatedRoadmaps != null)
             return await GetPagedRoadmaps(roadmapUser.CreatedRoadmaps.ToList(), page, userId);
@@ -425,7 +425,7 @@ public class RoadmapService : IRoadmapService
                 {
                     var progress = await _progressRepository.GetByUserAndRoadmap(user.Id, roadmap.Id);
 
-                    roadmapDto.Progress = progress.UsersProgress;
+                    roadmapDto.TopicsClosed = _progressHelper.CountClosed(progress.UsersProgress);
                 }
             }
 
