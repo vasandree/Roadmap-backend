@@ -131,6 +131,7 @@ public class RoadmapService : IRoadmapService
             StarsCount = 0,
             TopicsCount = 0,
             User = user,
+            CreationTime = DateTime.UtcNow,
             PrivateAccesses = new List<PrivateAccess>()
         });
     }
@@ -303,9 +304,6 @@ public class RoadmapService : IRoadmapService
         return await GetPagedRoadmaps(roadmaps, 1, user.Id);
     }
 
-
-
-
     public async Task StarRoadmap(Guid userId, Guid roadmapId)
     {
         if (!await _roadmapRepository.CheckIfIdExists(roadmapId))
@@ -327,6 +325,7 @@ public class RoadmapService : IRoadmapService
         if (user.Stared != null && user.Stared.Contains(roadmapId))
         {
             user.Stared.Remove(roadmapId);
+            roadmap.StarsCount--;
         }
         else if (user.Stared != null)
         {
@@ -334,6 +333,7 @@ public class RoadmapService : IRoadmapService
             user.Stared.Add(roadmapId);
         }
 
+        await _roadmapRepository.UpdateAsync(roadmap);
         await _repository.UpdateAsync(user);
     }
 

@@ -71,9 +71,8 @@ public class RoadmapAccessService : IRoadmapAccessService
             if (!await _repository.CheckIfIdExists(id))
                 throw new NotFound("User does not exist");
             
-            if (roadmap.UserId != id)
-                throw new Forbidden($"User is not a creator of roadmap with id={roadmapId}");
-
+            if (roadmap.UserId == id)
+                throw new BadRequest("You cannot add yourself");
         }
         
         foreach (var id in userIds)
@@ -127,7 +126,7 @@ public class RoadmapAccessService : IRoadmapAccessService
             await _accessRepository.DeleteAsync(await _accessRepository.GetByUserAndRoadmap(id, roadmapId));
         }
 
-        if (roadmap.PrivateAccesses == null)
+        if (!roadmap.PrivateAccesses.Any())
             roadmap.Status = Status.Private;
     }
 

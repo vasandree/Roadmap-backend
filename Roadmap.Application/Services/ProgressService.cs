@@ -41,7 +41,7 @@ public class ProgressService : IProgressService
 
         var roadmap = await _roadmapRepository.GetById(roadmapId);
 
-        if (roadmap.Status != Status.Public || roadmap.UserId != userId)
+        if (roadmap.Status != Status.Public &&  roadmap.UserId != userId)
         {
             if (!await _accessRepository.CheckIfUserHasAccess(roadmapId, userId))
                 throw new Forbidden("You do not have access to this roadmap");

@@ -15,16 +15,20 @@ public class ProgressHelper
 
     public List<Guid> GetTopicIds(JsonDocument jsonDocument)
     {
-        var jsonElements = jsonDocument.RootElement.EnumerateArray();
+        if (jsonDocument.RootElement.TryGetProperty("cells", out JsonElement cellsElement) && cellsElement.ValueKind == JsonValueKind.Array)
+        {
+            var nonEdgeNodes = cellsElement.EnumerateArray()
+                .Where(element => element.TryGetProperty("shape", out var shape) && shape.GetString() != "edge")
+                .ToList();
 
-        var nonEdgeNodes = jsonElements
-            .Where(element => element.TryGetProperty("shape", out var shape) && shape.GetString() != "edge")
-            .ToList();
+            return nonEdgeNodes.Any()
+                ? nonEdgeNodes.Select(element => Guid.Parse(element.GetProperty("id").GetString())).ToList()
+                : new List<Guid>();
+        }
 
-        return nonEdgeNodes.Any()
-            ? nonEdgeNodes.Select(element => Guid.Parse(element.GetProperty("id").GetString())).ToList()
-            : new List<Guid>();
+        return new List<Guid>();
     }
+
 
     public async Task ChangeProgress(Guid userId, Guid roadmapId, List<Guid> deletedTopicIds, List<Guid> addedTopicIds,
         List<Guid> modifiedIds)

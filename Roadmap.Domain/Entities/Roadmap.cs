@@ -20,6 +20,8 @@ public class Roadmap : GenericEntity
 
     [Required] public int TopicsCount { get; set; }
 
+    [Required] public DateTime CreationTime { get; set; }
+
     [Required] public User User { get; set; }
 
     public IEnumerable<PrivateAccess>? PrivateAccesses { get; set; }
