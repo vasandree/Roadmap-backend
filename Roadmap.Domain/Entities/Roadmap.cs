@@ -10,8 +10,7 @@ public class Roadmap : GenericEntity
     [Required] [ForeignKey("User")] public Guid UserId { get; set; }
 
     [Required] public string Name { get; set; }
-
-    [Required] public string Description { get; set; }
+    public string? Description { get; set; }
 
     public JsonDocument? Content { get; set; }
 

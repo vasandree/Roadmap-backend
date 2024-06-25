@@ -9,8 +9,7 @@ public class RoadmapRequestDto
     [MaxLength(50)]
     public string Name { get; set; }
     
-    [Required]
     [MinLength(0)]
     [MaxLength(80)]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 }
