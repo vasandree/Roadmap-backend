@@ -66,8 +66,10 @@ public class RoadmapService : IRoadmapService
             if (roadmap.Content == null) return dto;
             if (!await _progressRepository.CheckIfExists(user.Id, roadmapId))
                 await CreateProgress(user, roadmap);
-            
+
             var progress = await _progressRepository.GetByUserAndRoadmap(user.Id, roadmap.Id);
+            
+            await _progressRepository.UpdateAsync(progress);
             
             dto.Progress = progress.UsersProgress;
 
@@ -88,7 +90,7 @@ public class RoadmapService : IRoadmapService
         {
             var topicsIds = _progressHelper.GetTopicIds(roadmap.Content);
 
-             await _progressRepository.CreateAsync(new Progress
+            await _progressRepository.CreateAsync(new Progress
             {
                 Id = Guid.NewGuid(),
                 RoadmapId = roadmap.Id,
@@ -126,7 +128,7 @@ public class RoadmapService : IRoadmapService
             UserId = userId,
             Name = roadmapRequestDto.Name,
             Description = roadmapRequestDto.Description,
-            Content = {},
+            Content = { },
             Status = Status.Private,
             StarsCount = 0,
             TopicsCount = 0,
@@ -180,10 +182,11 @@ public class RoadmapService : IRoadmapService
 
         if (jsonContent != roadmap.Content)
         {
+            var newTopicIds = _progressHelper.GetTopicIds(jsonContent);
+
             if (roadmap.Content != null)
             {
                 var oldTopicsIds = _progressHelper.GetTopicIds(roadmap.Content);
-                var newTopicIds = _progressHelper.GetTopicIds(jsonContent);
                 var commonTopicIds = oldTopicsIds.Intersect(newTopicIds).ToList();
 
                 var modifiedIds = _progressHelper.GetModifiedTopics(commonTopicIds, roadmap.Content, jsonContent);
@@ -192,11 +195,11 @@ public class RoadmapService : IRoadmapService
                 var addedTopicIds = newTopicIds.Except(oldTopicsIds).ToList();
 
                 await _progressHelper.ChangeProgress(userId, roadmapId, deletedTopicIds, addedTopicIds, modifiedIds);
-
-                roadmap.TopicsCount = newTopicIds.Count;
             }
 
+            roadmap.TopicsCount = newTopicIds.Count;
             roadmap.Content = jsonContent;
+
             await _roadmapRepository.UpdateAsync(roadmap);
         }
     }
@@ -259,8 +262,8 @@ public class RoadmapService : IRoadmapService
 
         user.Stared = existingRoadmaps;
         await _repository.UpdateAsync(user);
-        
-        
+
+
         var roadmaps = await _roadmapRepository.GetRoadmapsByIds(existingRoadmaps.ToList());
 
 
@@ -298,9 +301,9 @@ public class RoadmapService : IRoadmapService
 
         user.RecentlyVisited = existingRoadmaps;
         await _repository.UpdateAsync(user);
-        
-        var roadmaps = await _roadmapRepository.GetRoadmapsByIds(existingRoadmaps);
 
+        var roadmaps = await _roadmapRepository.GetRoadmapsByIds(existingRoadmaps);
+        
         return await GetPagedRoadmaps(roadmaps, 1, user.Id);
     }
 
@@ -339,7 +342,6 @@ public class RoadmapService : IRoadmapService
 
     public async Task<RoadmapResponseDto> CopyRoadmap(Guid userId, Guid roadmapId)
     {
-        
         if (!await _roadmapRepository.CheckIfIdExists(roadmapId))
             throw new NotFound($"Roadmap with id={roadmapId} not found");
 
@@ -349,27 +351,28 @@ public class RoadmapService : IRoadmapService
             throw new NotFound("User does not exist");
 
         var user = await _repository.GetById(userId);
-        
-        if (roadmap.Status != Status.Public || roadmap.UserId != userId)
+
+        if (roadmap.Status != Status.Public && roadmap.UserId != userId)
             throw new BadRequest("Roadmap is not published");
 
-        
+
         var newRoadmap = new Domain.Entities.Roadmap
         {
             Id = Guid.NewGuid(),
             UserId = roadmap.UserId,
-            Name = $"{roadmap.Name}(копия)",
+            Name = $"{roadmap.Name} (копия)",
             Description = roadmap.Description,
-            Content = null,
+            Content = roadmap.Content,
             Status = Status.Private,
             StarsCount = 0,
-            TopicsCount = 0,
+            TopicsCount = roadmap.TopicsCount,
             User = user,
+            CreationTime = DateTime.UtcNow,
             PrivateAccesses = new List<PrivateAccess>()
         };
 
         await _roadmapRepository.CreateAsync(newRoadmap);
-        
+
         return _mapper.Map<RoadmapResponseDto>(newRoadmap);
     }
 
@@ -377,7 +380,7 @@ public class RoadmapService : IRoadmapService
     {
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound("User does not exist");
-        
+
         if (!await _repository.CheckIfIdExists(roadmapUserId))
             throw new NotFound("User does not exist");
 
@@ -456,19 +459,5 @@ public class RoadmapService : IRoadmapService
         }
 
         await _repository.UpdateAsync(user);
-    }
-
-
-    private List<Guid> GetNonEdges(JsonDocument jsonDocument)
-    {
-        var jsonElements = jsonDocument.RootElement.EnumerateArray();
-
-        var nonEdgeNodes = jsonElements
-            .Where(element => element.TryGetProperty("shape", out var shape) && shape.GetString() != "edge")
-            .ToList();
-
-        return nonEdgeNodes.Any()
-            ? nonEdgeNodes.Select(element => Guid.Parse(element.GetProperty("id").GetString())).ToList()
-            : new List<Guid>();
     }
 }

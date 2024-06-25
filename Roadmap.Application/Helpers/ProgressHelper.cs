@@ -113,14 +113,21 @@ public class ProgressHelper
     {
         var root = jsonDocument.RootElement;
 
-        foreach (var element in root.EnumerateArray())
+        if (root.TryGetProperty("cells", out JsonElement cells) && cells.ValueKind == JsonValueKind.Array)
         {
-            if (element.GetProperty("id").GetGuid() == topicId)
+            foreach (var cell in cells.EnumerateArray())
             {
-                var text = element.GetProperty("attrs").GetProperty("text").GetProperty("text").GetString();
-                var data = element.GetProperty("data").GetProperty("data").GetString();
-
-                return new TopicDetails { Text = text, Data = data };
+                if (cell.TryGetProperty("id", out JsonElement idElement) && idElement.GetGuid() == topicId)
+                {
+                    var text = cell.GetProperty("attrs").GetProperty("text").GetProperty("text").GetString();
+                    var data = cell.TryGetProperty("data", out JsonElement dataElement) ? dataElement.GetProperty("data").GetString() : null;
+                
+                    return new TopicDetails
+                    {
+                        Text = text,
+                        Data = data
+                    };
+                }
             }
         }
 

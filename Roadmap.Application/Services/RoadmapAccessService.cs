@@ -34,6 +34,8 @@ public class RoadmapAccessService : IRoadmapAccessService
         if (roadmap.Status == Status.Public)
             throw new BadRequest("Roadmap is already published");
 
+        if (roadmap.Content == null)
+            throw new BadRequest("You cannot publish roadmap with no content");
         
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound("User does not exist");
@@ -57,6 +59,9 @@ public class RoadmapAccessService : IRoadmapAccessService
 
         var roadmap = await _roadmapRepository.GetById(roadmapId);
 
+        if (roadmap.Content == null)
+            throw new BadRequest("You cannot add users to roadmap with no content");
+        
         if (roadmap.Status == Status.Public)
             throw new BadRequest("Roadmap is published. You can't edit it");
         
@@ -68,8 +73,12 @@ public class RoadmapAccessService : IRoadmapAccessService
 
         foreach (var id in userIds)
         {
+            
             if (!await _repository.CheckIfIdExists(id))
                 throw new NotFound("User does not exist");
+
+            if (await _accessRepository.CheckIfUserHasAccess(roadmapId, id))
+                throw new BadRequest($"User with id={id} already has access to this roadmap");
             
             if (roadmap.UserId == id)
                 throw new BadRequest("You cannot add yourself");
