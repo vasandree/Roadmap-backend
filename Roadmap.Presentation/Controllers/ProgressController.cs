@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Roadmap.Application.Interfaces.Repositories;
 using Roadmap.Application.Interfaces.Services;
 using Roadmap.Domain.Enums;
 

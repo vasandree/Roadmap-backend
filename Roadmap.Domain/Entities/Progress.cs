@@ -14,8 +14,7 @@ public class Progress : GenericEntity
     [ForeignKey("User")] 
     public Guid UserId { get; set; }
     
-    [Required]
-    public JsonDocument UsersProgress { get; set; }
+    public JsonDocument? UsersProgress { get; set; }
     
     [Required]
     public User User { get; set; }

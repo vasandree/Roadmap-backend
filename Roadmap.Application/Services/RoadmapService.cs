@@ -50,7 +50,7 @@ public class RoadmapService : IRoadmapService
 
             var user = await _repository.GetById(userId.Value);
 
-            if (roadmap.Status != Status.Public)
+            if (roadmap.Status != Status.Public && roadmap.UserId != userId.Value)
             {
                 if (!await _accessRepository.CheckIfUserHasAccess(roadmapId, userId.Value))
                     throw new Forbidden($"User does not have access to roadmap with id={roadmapId}");
@@ -63,11 +63,12 @@ public class RoadmapService : IRoadmapService
 
             await AddRecentlyVisited(user, roadmapId);
 
+            if (roadmap.Content == null) return dto;
             if (!await _progressRepository.CheckIfExists(user.Id, roadmapId))
                 await CreateProgress(user, roadmap);
-
+            
             var progress = await _progressRepository.GetByUserAndRoadmap(user.Id, roadmap.Id);
-
+            
             dto.Progress = progress.UsersProgress;
 
             return dto;
@@ -87,7 +88,7 @@ public class RoadmapService : IRoadmapService
         {
             var topicsIds = _progressHelper.GetTopicIds(roadmap.Content);
 
-            await _progressRepository.CreateAsync(new Progress
+             await _progressRepository.CreateAsync(new Progress
             {
                 Id = Guid.NewGuid(),
                 RoadmapId = roadmap.Id,
