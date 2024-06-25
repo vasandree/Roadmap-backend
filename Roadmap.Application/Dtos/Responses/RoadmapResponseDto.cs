@@ -33,6 +33,5 @@ public class RoadmapResponseDto
     [Required]
     public bool IsStared { get; set; }
     
-    [Required]
-    public JsonDocument Progress { get; set; }
+    public JsonDocument? Progress { get; set; }
 }

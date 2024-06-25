@@ -14,21 +14,21 @@ public class RoadmapAccessController : ControllerBase
         _roadmapAccessService = roadmapAccessService;
     }
 
-    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/publish")]
+    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmaps/{id}/publish")]
     public async Task<IActionResult> PublishRoadmap(Guid id)
     {
         await _roadmapAccessService.PublishRoadmap(Guid.Parse(User.FindFirst("UserId")!.Value!), id);
         return Ok();
     }
 
-    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/access/add")]
+    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmaps/{id}/access/add")]
     public async Task<IActionResult> AddPrivateAccess(Guid id, [FromBody] Guid[] usersIds)
     {
         await _roadmapAccessService.AddPrivateAccess(Guid.Parse(User.FindFirst("UserId")!.Value!), usersIds, id);
         return Ok();
     }
 
-    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/access/remove")]
+    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmaps/{id}/access/remove")]
     public async Task<IActionResult> RemovePrivateAccess(Guid id, [FromBody] Guid[] usersIds)
     {
         await _roadmapAccessService.RemovePrivateAccess(Guid.Parse(User.FindFirst("UserId")!.Value!), usersIds,
@@ -36,7 +36,7 @@ public class RoadmapAccessController : ControllerBase
         return Ok();
     }
     
-    [HttpGet, Authorize(Policy = "AuthorizationPolicy"), Route("{id}/users")]
+    [HttpGet, Authorize(Policy = "AuthorizationPolicy"), Route("roadmaps/{id}/users")]
     public async Task<IActionResult> GetUsersForRoadmap(Guid id, string? username)
     {
         return Ok(await _roadmapAccessService.GetPrivateUsers(Guid.Parse(User.FindFirst("UserId")!.Value!), id, username));

@@ -123,10 +123,10 @@ public class UserService : IUserService
 
         var user = await _repository.GetById(userId);
         
-        if (await _repository.CheckIfEmailExists(editProfileDto.Email))
+        if (user.Email != editProfileDto.Email && await _repository.CheckIfEmailExists(editProfileDto.Email))
             throw new Conflict("User with this email already exists");
 
-        if (await _repository.CheckIfUsernameExists(editProfileDto.Username))
+        if (user.Username != editProfileDto.Username && await _repository.CheckIfUsernameExists(editProfileDto.Username))
             throw new Conflict("User with this username already exists");
 
         user.Email = editProfileDto.Email;

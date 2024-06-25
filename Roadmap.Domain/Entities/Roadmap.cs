@@ -13,7 +13,7 @@ public class Roadmap : GenericEntity
 
     [Required] public string Description { get; set; }
 
-    [Required] public JsonDocument? Content { get; set; }
+    public JsonDocument? Content { get; set; }
 
     [Required] public Status Status { get; set; }
 

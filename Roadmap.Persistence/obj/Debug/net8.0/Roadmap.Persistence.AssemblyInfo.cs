@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Roadmap.Persistence")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aab53b4b923eb12f41f7eb94755de8d28b6b6fc5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dda59457dc7e021829868c90f4414596f219be10")]
 [assembly: System.Reflection.AssemblyProductAttribute("Roadmap.Persistence")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Roadmap.Persistence")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

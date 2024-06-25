@@ -16,7 +16,7 @@ public class ProgressController : ControllerBase
         _progressService = progressService;
     }
 
-    [HttpPut, Authorize("AuthorizationPolicy"), Route("{roadmapId}/{topicId}/progress")]
+    [HttpPut, Authorize("AuthorizationPolicy"), Route("roadmaps/{roadmapId}/topics/{topicId}/progress")]
     public async Task<IActionResult> ChangeProgress(Guid roadmapId, Guid topicId, ProgressStatus progressStatus)
     {
         await _progressService.ChangeProgress(Guid.Parse(User.FindFirst("UserId")!.Value!), roadmapId, topicId,

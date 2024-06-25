@@ -125,7 +125,7 @@ public class RoadmapService : IRoadmapService
             UserId = userId,
             Name = roadmapRequestDto.Name,
             Description = roadmapRequestDto.Description,
-            Content = null,
+            Content = {},
             Status = Status.Private,
             StarsCount = 0,
             TopicsCount = 0,

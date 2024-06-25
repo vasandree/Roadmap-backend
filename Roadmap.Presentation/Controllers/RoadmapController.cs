@@ -50,7 +50,7 @@ public class RoadmapController : ControllerBase
         return Ok(await _roadmapService.GetRecentRoadmaps(Guid.Parse(User.FindFirst("UserId")!.Value!)));
     }
     
-    [HttpGet, Route("roadmap/{id}"), Authorize("AuthorizationPolicy"), AllowAnonymous]
+    [HttpGet, Route("roadmaps/{id}"), Authorize("AuthorizationPolicy"), AllowAnonymous]
     public async Task<IActionResult> GetRoadmap(Guid id)
     {
         var userIdClaim = User.FindFirst("UserId");
@@ -60,42 +60,42 @@ public class RoadmapController : ControllerBase
         return Ok(await _roadmapService.GetRoadmap(id, userId));
     }
 
-    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap")]
+    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmaps")]
     public async Task<IActionResult> CreateRoadmap(RoadmapRequestDto roadmapRequestDto)
     {
         await _roadmapService.CreateRoadMap(roadmapRequestDto, Guid.Parse(User.FindFirst("UserId")!.Value!));
         return Ok();
     }
 
-    [HttpPut, Authorize("AuthorizationPolicy"), Route("roadmap/{id}")]
+    [HttpPut, Authorize("AuthorizationPolicy"), Route("roadmaps/{id}")]
     public async Task<IActionResult> EditRoadmap(Guid id, RoadmapRequestDto roadmapRequestDto)
     {
         await _roadmapService.EditRoadmap(id, roadmapRequestDto, Guid.Parse(User.FindFirst("UserId")!.Value!));
         return Ok();
     }
 
-    [HttpPut, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/content")]
+    [HttpPut, Authorize("AuthorizationPolicy"), Route("roadmaps/{id}/content")]
     public async Task<IActionResult> EditRoadmapContent(Guid id, [FromBody]JsonDocument jsonContent)
     {
         await _roadmapService.EditRoadmapContent(id, jsonContent, Guid.Parse(User.FindFirst("UserId")!.Value!));
         return Ok();
     }
     
-    [HttpDelete, Authorize("AuthorizationPolicy"), Route("roadmap/{id}")]
+    [HttpDelete, Authorize("AuthorizationPolicy"), Route("roadmaps/{id}")]
     public async Task<IActionResult> DeleteRoadmap(Guid id)
     {
         await _roadmapService.DeleteRoadmap(id, Guid.Parse(User.FindFirst("UserId")!.Value!));
         return Ok();
     }
     
-    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/star")]
+    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmaps/{id}/star")]
     public async Task<IActionResult> StarRoadmap(Guid id)
     {
         await _roadmapService.StarRoadmap(Guid.Parse(User.FindFirst("UserId")!.Value!), id);
         return Ok();
     }
 
-    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmap/{id}/copy")]
+    [HttpPost, Authorize("AuthorizationPolicy"), Route("roadmaps/{id}/copy")]
     public async Task<IActionResult> CopyRoadmap(Guid id)
     {
         await _roadmapService.CopyRoadmap(Guid.Parse(User.FindFirst("UserId")!.Value!), id);
