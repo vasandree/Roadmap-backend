@@ -70,6 +70,10 @@ public class RoadmapAccessService : IRoadmapAccessService
         {
             if (!await _repository.CheckIfIdExists(id))
                 throw new NotFound("User does not exist");
+            
+            if (roadmap.UserId != id)
+                throw new Forbidden($"User is not a creator of roadmap with id={roadmapId}");
+
         }
         
         foreach (var id in userIds)
