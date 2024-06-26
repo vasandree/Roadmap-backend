@@ -8,7 +8,7 @@ namespace Roadmap.Application.Interfaces.Services;
 public interface IRoadmapService
 {
     Task<RoadmapResponseDto> GetRoadmap(Guid roadmapId, Guid? userId);
-    Task CreateRoadMap(RoadmapRequestDto roadmapRequestDto, Guid userId);
+    Task<Guid> CreateRoadMap(RoadmapRequestDto roadmapRequestDto, Guid userId);
     Task EditRoadmap(Guid roadmapId, RoadmapRequestDto roadmapRequestDto, Guid userId);
     Task EditRoadmapContent(Guid roadmapId, JsonDocument jsonContent, Guid userId);
     Task DeleteRoadmap(Guid roadmapId, Guid userId);
@@ -18,6 +18,6 @@ public interface IRoadmapService
     Task<RoadmapsPagedDto> GetPrivateRoadmaps(Guid userId, int page);
     Task<RoadmapsPagedDto> GetRecentRoadmaps(Guid userId);
     Task StarRoadmap(Guid userId, Guid roadmapId);
-    Task<RoadmapResponseDto> CopyRoadmap(Guid userId, Guid roadmapId);
+    Task<Guid> CopyRoadmap(Guid userId, Guid roadmapId);
     Task<RoadmapsPagedDto> GetUsersRoadmaps(Guid userId, Guid roadmapUserId, int page);
 }

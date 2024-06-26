@@ -115,14 +115,14 @@ public class RoadmapService : IRoadmapService
         return jsonDocument;
     }
 
-    public async Task CreateRoadMap(RoadmapRequestDto roadmapRequestDto, Guid userId)
+    public async Task<Guid> CreateRoadMap(RoadmapRequestDto roadmapRequestDto, Guid userId)
     {
         if (!await _repository.CheckIfIdExists(userId))
             throw new NotFound("User does not exist");
 
         var user = await _repository.GetById(userId);
 
-        await _roadmapRepository.CreateAsync(new Domain.Entities.Roadmap
+        var newRoadmap = new Domain.Entities.Roadmap
         {
             Id = Guid.NewGuid(),
             UserId = userId,
@@ -135,7 +135,11 @@ public class RoadmapService : IRoadmapService
             User = user,
             CreationTime = DateTime.UtcNow,
             PrivateAccesses = new List<PrivateAccess>()
-        });
+        };
+        
+        await _roadmapRepository.CreateAsync(newRoadmap);
+        
+        return newRoadmap.Id;
     }
 
     public async Task EditRoadmap(Guid roadmapId, RoadmapRequestDto roadmapRequestDto, Guid userId)
@@ -340,7 +344,7 @@ public class RoadmapService : IRoadmapService
         await _repository.UpdateAsync(user);
     }
 
-    public async Task<RoadmapResponseDto> CopyRoadmap(Guid userId, Guid roadmapId)
+    public async Task<Guid> CopyRoadmap(Guid userId, Guid roadmapId)
     {
         if (!await _roadmapRepository.CheckIfIdExists(roadmapId))
             throw new NotFound($"Roadmap with id={roadmapId} not found");
@@ -373,7 +377,7 @@ public class RoadmapService : IRoadmapService
 
         await _roadmapRepository.CreateAsync(newRoadmap);
 
-        return _mapper.Map<RoadmapResponseDto>(newRoadmap);
+        return newRoadmap.Id;
     }
 
     public async Task<RoadmapsPagedDto> GetUsersRoadmaps(Guid userId, Guid roadmapUserId, int page)

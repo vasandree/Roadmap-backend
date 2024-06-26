@@ -63,8 +63,8 @@ public class RoadmapController : ControllerBase
     [HttpPost, Authorize("AuthorizationPolicy")]
     public async Task<IActionResult> CreateRoadmap(RoadmapRequestDto roadmapRequestDto)
     {
-        await _roadmapService.CreateRoadMap(roadmapRequestDto, Guid.Parse(User.FindFirst("UserId")!.Value!));
-        return Ok();
+        return Ok(await _roadmapService.CreateRoadMap(roadmapRequestDto,
+            Guid.Parse(User.FindFirst("UserId")!.Value!)));
     }
 
     [HttpPut, Authorize("AuthorizationPolicy"), Route("{id}")]
@@ -98,7 +98,6 @@ public class RoadmapController : ControllerBase
     [HttpPost, Authorize("AuthorizationPolicy"), Route("{id}/copy")]
     public async Task<IActionResult> CopyRoadmap(Guid id)
     {
-        await _roadmapService.CopyRoadmap(Guid.Parse(User.FindFirst("UserId")!.Value!), id);
-        return Ok();
+        return Ok(await _roadmapService.CopyRoadmap(Guid.Parse(User.FindFirst("UserId")!.Value!), id));
     }
 }
