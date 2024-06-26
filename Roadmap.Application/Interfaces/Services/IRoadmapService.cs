@@ -19,5 +19,5 @@ public interface IRoadmapService
     Task<RoadmapsPagedDto> GetRecentRoadmaps(Guid userId);
     Task StarRoadmap(Guid userId, Guid roadmapId);
     Task<Guid> CopyRoadmap(Guid userId, Guid roadmapId);
-    Task<RoadmapsPagedDto> GetUsersRoadmaps(Guid userId, Guid roadmapUserId, int page);
+    Task<RoadmapsPagedDto> GetUsersRoadmaps(Guid? userId, Guid roadmapUserId, int page);
 }

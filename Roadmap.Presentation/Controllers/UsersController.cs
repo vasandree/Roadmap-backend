@@ -19,12 +19,18 @@ public class UsersController : ControllerBase
     [HttpGet, Authorize(Policy = "AuthorizationPolicy"),  AllowAnonymous]
     public async Task<IActionResult> GetUsers([FromQuery] string username)
     {
-        return Ok(await _userService.GetUsers(Guid.Parse(User.FindFirst("UserId")!.Value!), username));
+        var userIdClaim = User.FindFirst("UserId");
+        Guid? userId = userIdClaim != null ? Guid.Parse(userIdClaim.Value) : null;
+        
+        return Ok(await _userService.GetUsers(userId, username));
     }
 
     [HttpGet, Authorize(Policy = "AuthorizationPolicy"), Route("{userId}/roadmaps"), AllowAnonymous]
-    public async Task<IActionResult> GetUsersRoadmaps(Guid userId, int page = 1)
+    public async Task<IActionResult> GetUsersRoadmaps(Guid userIdRoadmaps, int page = 1)
     {
-        return Ok(await _roadmapService.GetUsersRoadmaps(Guid.Parse(User.FindFirst("UserId")!.Value!), userId, page));
+        var userIdClaim = User.FindFirst("UserId");
+        Guid? userId = userIdClaim != null ? Guid.Parse(userIdClaim.Value) : null;
+        
+        return Ok(await _roadmapService.GetUsersRoadmaps(userId, userIdRoadmaps, page));
     }
 }

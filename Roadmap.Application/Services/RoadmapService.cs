@@ -380,11 +380,17 @@ public class RoadmapService : IRoadmapService
         return newRoadmap.Id;
     }
 
-    public async Task<RoadmapsPagedDto> GetUsersRoadmaps(Guid userId, Guid roadmapUserId, int page)
+    public async Task<RoadmapsPagedDto> GetUsersRoadmaps(Guid? userId, Guid roadmapUserId, int page)
     {
-        if (!await _repository.CheckIfIdExists(userId))
-            throw new NotFound("User does not exist");
+        if (userId.HasValue)
+        {
+            if (!await _repository.CheckIfIdExists(userId.Value))
+                throw new NotFound("User does not exist");
 
+            if (userId.Value == roadmapUserId)
+                throw new BadRequest("");
+        }
+        
         if (!await _repository.CheckIfIdExists(roadmapUserId))
             throw new NotFound("User does not exist");
 
