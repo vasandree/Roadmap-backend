@@ -389,19 +389,26 @@ public class RoadmapService : IRoadmapService
                 throw new NotFound("User does not exist");
 
             if (userId.Value == roadmapUserId)
-                throw new BadRequest("");
+                throw new BadRequest("You cannot view your own roadmaps.");
         }
-        
+    
         if (!await _repository.CheckIfIdExists(roadmapUserId))
             throw new NotFound("User does not exist");
 
         var roadmapUser = await _repository.GetById(roadmapUserId);
 
         if (roadmapUser.CreatedRoadmaps != null)
-            return await GetPagedRoadmaps(roadmapUser.CreatedRoadmaps.ToList(), page, userId);
+        {
+            var publicRoadmaps = roadmapUser.CreatedRoadmaps
+                .Where(x => x.Status == Status.Public)
+                .ToList();
+
+            return await GetPagedRoadmaps(publicRoadmaps, page, userId);
+        }
 
         return new RoadmapsPagedDto();
     }
+
 
     private async Task<RoadmapsPagedDto> GetPagedRoadmaps(List<Domain.Entities.Roadmap> roadmaps, int page,
         Guid? userId)
