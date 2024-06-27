@@ -72,7 +72,8 @@ public class RoadmapService : IRoadmapService
             await _progressRepository.UpdateAsync(progress);
             
             dto.Progress = progress.UsersProgress;
-
+            dto.TopicsClosed = _progressHelper.CountClosed(progress.UsersProgress);
+            
             return dto;
         }
 
@@ -363,7 +364,7 @@ public class RoadmapService : IRoadmapService
         var newRoadmap = new Domain.Entities.Roadmap
         {
             Id = Guid.NewGuid(),
-            UserId = roadmap.UserId,
+            UserId = userId,
             Name = $"{roadmap.Name} (копия)",
             Description = roadmap.Description,
             Content = roadmap.Content,
